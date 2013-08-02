@@ -1,0 +1,6 @@
+1970-01-01 Sorts Mill <sortsmill@crudfactory.com>
+
+	This is not really the Changelog.
+	The ChangeLog is generated automatically when you run `make dist'
+	somewhere within a cloned repository of the source code.
+
