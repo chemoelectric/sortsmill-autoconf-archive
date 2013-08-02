@@ -2,11 +2,12 @@
 #
 # Copyright (C) 2013 Khaled Hosny and Barry Schwartz
 # 
-# This file is free software; Khaled Hosny and Barry Schwartz give
-# unlimited permission to copy and/or distribute it, with or without
-# modifications, as long as this notice is preserved.
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.  This file is offered as-is,
+# without any warranty.
 
-# serial 2
+# serial 3
 
 # FIXME: Document this macro.
 
