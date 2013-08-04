@@ -30,5 +30,5 @@ dnl Turn off hyphenation.
 	rm -f stm_make_readme.nr-tmp
 "
    AC_SUBST([$1])
-   AM_SUBST_NOTMAKE([$1])
+   AM_SUBST_NOTMAKE([$1])dnl  Requires Automake >= 1.11
 ])
