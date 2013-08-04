@@ -20,10 +20,15 @@ include config/sortsmill-dist-changelog.am
 
 ACLOCAL_AMFLAGS = -I .
 
-aclocaldir = ${datadir}/aclocal
+aclocaldir = $(datadir)/aclocal
 
 dist_aclocal_DATA =
 
 dist_aclocal_DATA += stm_analyze_package_version.m4
+dist_aclocal_DATA += stm_make_readme.m4
+
 dist_aclocal_DATA += stm_path_progs_cached_and_precious.m4
+
+dist_aclocal_DATA += stm_prog_help2man.m4
+dist_aclocal_DATA += stm_prog_perl.m4
 dist_aclocal_DATA += stm_prog_sortsmill_changelogger.m4
