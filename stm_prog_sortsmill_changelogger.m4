@@ -7,10 +7,17 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
-# FIXME: Document this macro.
-
+# StM_PROG_SORTSMILL_CHANGELOGGER
+# -------------------------------
+#
+# Set SORTSMILL_CHANGELOGGER to the path of the first
+# sortsmill-changelogger in the PATH, or to an empty string if
+# sortsmill-changelogger is not found. The result is cached in
+# ac_cv_path_SORTSMILL_CHANGELOGGER. The test may be overridden by
+# setting SORTSMILL_CHANGELOGGER or the cache variable.
+#
 AC_DEFUN([StM_PROG_SORTSMILL_CHANGELOGGER],[
    AC_PROG_FGREP
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([SORTSMILL_CHANGELOGGER],
