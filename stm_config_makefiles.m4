@@ -7,7 +7,21 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
+
+
+dnl Convert, for instance, `a' --> 'a', `a:b:c:d' --> `a'
+m4_define([__my_m4_config_file_target],[m4_car(m4_unquote(m4_split([$1],[:])))])
+
+dnl Convert, for instance, `a' --> `', `a:b:c:d' --> `b:c:d'
+m4_define([__my_m4_config_file_components],[m4_join([:],m4_unquote(m4_cdr(m4_unquote(m4_split([$1],[:])))))])
+
+dnl Convert, for instance, (`a',`x') --> `x:a.in', (`a:b:c:d',`x') --> `x:b:c:d'
+m4_define([__my_m4_config_file_retargetted],
+          [m4_ifval(m4_quote(__my_m4_config_file_components([$1])),
+                    [[$2]:__my_m4_config_file_components([$1])],
+                    [[$2]:[$1].in])])
+
 
 # StM_CONFIG_MAKEFILES([makefile = `Makefile'],
 #                      [gnu_makefile = `GNUmakefile'],
@@ -17,8 +31,11 @@
 # Configure Makefile and GNUmakefile, making Makefile a wrapper around
 # GNUmakefile, if GNU Make is present.
 #
-# Typical use is to call the Autoconf Archive macro AX_CHECK_GNU_MAKE
-# sometime before calling StM_CONFIG_MAKEFILES:
+# The first argument may have components separated by colons, similar
+# to those accepted by AC_CONFIG_FILES(...)
+#
+# Typical use is to call the GNU Autoconf Archive macro
+# AX_CHECK_GNU_MAKE at some point before calling StM_CONFIG_MAKEFILES:
 #
 #           .
 #           .
@@ -50,7 +67,7 @@ AC_DEFUN([StM_CONFIG_MAKEFILES],[
    AC_CONFIG_FILES(m4_ifval([$1],[$1],[Makefile]),[
       # If GNU make is present, encourage other makes to call it instead.
       if test -n "${__stm_config_makefiles_make_command}"; then
-         cat > m4_ifval([$1],[$1],[Makefile]) <<EOF
+         cat > m4_ifval([$1],[__my_m4_config_file_target([$1])],[Makefile]) <<EOF
 # Attempt to have common non-GNU Make programs run GNU Make.
 
 .DEFAULT:
@@ -66,5 +83,6 @@ EOF
    ])
 
    # Create `GNUmakefile' or its substitute.
-   AC_CONFIG_FILES(m4_ifval([$2],[$2],[GNUmakefile]):m4_ifval([$1],[$1],[Makefile]).in)
+   AC_CONFIG_FILES(__my_m4_config_file_retargetted(m4_ifval([$1],[$1],[Makefile]),
+                                                   m4_ifval([$2],[$2],[GNUmakefile])))
 ])
