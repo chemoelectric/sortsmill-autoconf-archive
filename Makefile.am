@@ -25,6 +25,7 @@ aclocaldir = $(datadir)/aclocal
 dist_aclocal_DATA =
 
 dist_aclocal_DATA += stm_analyze_package_version.m4
+dist_aclocal_DATA += stm_config_makefiles.m4
 dist_aclocal_DATA += stm_make_readme.m4
 
 dist_aclocal_DATA += stm_path_progs_cached_and_precious.m4
