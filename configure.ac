@@ -48,7 +48,6 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_MKDIR_P
 AC_PROG_SED
-StM_PROG_SORTSMILL_CHANGELOGGER
 
 #--------------------------------------------------------------------------
 #
@@ -67,6 +66,8 @@ StM_PROG_SORTSMILL_CHANGELOGGER
 # Checks for library functions.
 
 #--------------------------------------------------------------------------
+
+StM_CHANGELOGGERIZE
 
 AC_CONFIG_FILES([Makefile])
 

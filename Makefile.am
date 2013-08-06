@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-include config/sortsmill-dist-changelog.am
-
 ACLOCAL_AMFLAGS = -I .
 
 aclocaldir = $(datadir)/aclocal
@@ -37,3 +35,6 @@ dist_aclocal_DATA += stm_prog_help2man.m4
 dist_aclocal_DATA += stm_prog_perl.m4
 dist_aclocal_DATA += stm_prog_sortsmill_changelogger.m4
 dist_aclocal_DATA += stm_prog_wget.m4
+
+dist-hook: dist-changelog
+@dist_changelog_rules@
