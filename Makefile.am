@@ -24,6 +24,7 @@ dist_aclocal_DATA =
 
 dist_aclocal_DATA += stm_analyze_package_version.m4
 dist_aclocal_DATA += stm_changeloggerize.m4
+dist_aclocal_DATA += stm_compiler_flags.m4
 dist_aclocal_DATA += stm_config_makefiles.m4
 dist_aclocal_DATA += stm_make_readme.m4
 
