@@ -53,8 +53,8 @@ m4_ifval([$2],[$2],[dist-changelog]):
 		echo \"*WARNING*:  If you are using non-VCS sources, the existing file will be kept.\"; \
 		echo \"*WARNING*:\"; \
 		echo \"*WARNING*:  (Note: If this make recipe is run via \\\`dist-hook:',\"; \
-        echo \"*WARNING*:  then, during a \\\`make distcheck',\"; \
-        echo \"*WARNING*:  this message should appear at some point.)\"; \
+		echo \"*WARNING*:  then, during a \\\`make distcheck',\"; \
+		echo \"*WARNING*:  this message should appear at some point.)\"; \
 		echo \"*WARNING*:\"; \
 	fi
 
