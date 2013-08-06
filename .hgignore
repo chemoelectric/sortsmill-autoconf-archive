@@ -20,8 +20,8 @@ syntax: regexp
 \.pyo$
 \.info$
 ^lib/
-^.libs/
-^.deps/
+^\.libs/
+^\.deps/
 ^m4/(?!gnulib-cache\.m4|(stm|ax)_.*\.m4)
 ^config/(?!config\.rpath)
 ^po/Makefile\.in\.in
