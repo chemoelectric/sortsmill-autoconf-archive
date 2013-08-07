@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 # StM_PROG_WGET
 # -------------
@@ -18,7 +18,7 @@
 # cache variable.
 #
 AC_DEFUN([StM_PROG_WGET],[
-   AC_PROG_EGREP
+   AC_REQUIRE([AC_PROG_EGREP])
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([WGET],[GNU Wget command],
       [wget],[         
          if LC_ALL=C LANG=C ${ac_path_WGET} --version | \

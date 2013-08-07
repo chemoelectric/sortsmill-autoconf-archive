@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 # StM_PROG_GAWK
 # -------------
@@ -18,7 +18,7 @@
 # cache variable.
 #
 AC_DEFUN([StM_PROG_GAWK],[
-   AC_PROG_EGREP
+   AC_REQUIRE([AC_PROG_EGREP])
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([GAWK],[GNU implementation of Awk],
       [gawk awk],[
          # Run a command that gawk, but neither mawk nor nawk, can execute.

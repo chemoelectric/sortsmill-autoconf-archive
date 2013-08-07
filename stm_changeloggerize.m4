@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 # StM_CHANGELOGGERIZE([changelogging_rules_var = `dist_changelog_rules'],
 #                     [make_target = `dist-changelog'],
@@ -29,7 +29,7 @@
 # there is no need to call that separately.
 #
 AC_DEFUN([StM_CHANGELOGGERIZE],[
-   StM_PROG_SORTSMILL_CHANGELOGGER
+   AC_REQUIRE([StM_PROG_SORTSMILL_CHANGELOGGER])
 dnl AM_SUBST_NOTMAKE requires Automake >= 1.11.
    AM_SUBST_NOTMAKE(m4_quote(m4_ifval([$1],[$1],[dist_changelog_rules])))
    AC_SUBST(m4_quote(m4_ifval([$1],[$1],[dist_changelog_rules])),["

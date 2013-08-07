@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 3
+# serial 4
 
 # StM_PROG_SORTSMILL_CHANGELOGGER
 # -------------------------------
@@ -19,7 +19,7 @@
 # setting SORTSMILL_CHANGELOGGER or the cache variable.
 #
 AC_DEFUN([StM_PROG_SORTSMILL_CHANGELOGGER],[
-   AC_PROG_FGREP
+   AC_REQUIRE([AC_PROG_FGREP])
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([SORTSMILL_CHANGELOGGER],
       [Sorts Mill Changelogger command],
       [sortsmill-changelogger],

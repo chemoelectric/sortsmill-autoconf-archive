@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 3
+# serial 4
 
 # StM_PROG_HELP2MAN
 # -----------------
@@ -18,7 +18,7 @@
 # or the cache variable.
 #
 AC_DEFUN([StM_PROG_HELP2MAN],[
-   AC_PROG_FGREP
+   AC_REQUIRE([AC_PROG_FGREP])
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([HELP2MAN],[GNU help2man command],
       [help2man],[
          if LC_ALL=C LANG=C ${ac_path_HELP2MAN} --version 2>&1 | \

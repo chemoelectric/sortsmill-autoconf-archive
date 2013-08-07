@@ -7,12 +7,12 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 # FIXME: Document this macro.
 
 AC_DEFUN([StM_ANALYZE_PACKAGE_VERSION],[
-   AC_PROG_SED
+   AC_REQUIRE([AC_PROG_SED])
    VERSION_MAJOR=`AS_ECHO(["${PACKAGE_VERSION}"]) | \
       ${SED} -e 's/^\([[0-9]][[0-9]]*\).*/\1/'`
    VERSION_MINOR=`AS_ECHO(["${PACKAGE_VERSION}"]) | \

@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 # StM_PROG_PERL
 # -------------
@@ -18,7 +18,7 @@
 # cache variable.
 #
 AC_DEFUN([StM_PROG_PERL],[
-   AC_PROG_EGREP
+   AC_REQUIRE([AC_PROG_EGREP])
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([PERL],[Perl interpreter command],
       [perl],[
          if LC_ALL=C LANG=C ${ac_path_PERL} --version 2>&1 | \
