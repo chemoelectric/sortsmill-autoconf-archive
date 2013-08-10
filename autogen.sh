@@ -1,21 +1,175 @@
 #!/bin/sh
+# Run this script to generate or regenerate the `configure' script,
+# for instance after cloning one of our Git, Mercurial, or Bazaar
+# repositories for this source code.
+
+# Sorts Mill Autogen
+# <https://bitbucket.org/sortsmill/sortsmill-autogen>
 #
-# You may run this to generate the `configure' script if it is not
-# present or needs updating.
+# Copyright (C) 2013 Khaled Hosny and Barry Schwartz
+# 
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.  This file is offered as-is,
+# without any warranty.
 
-test -n "$srcdir" || srcdir=`dirname "$0"`
-test -n "$srcdir" || srcdir=.
 
-olddir=`pwd`
-cd $srcdir
+# Sorts Mill developers: please increase the serial number when you
+# make any significant change to this script in its own repository:
+#
+# serial 1
 
-echo -n "checking for autoreconf... "
-which autoreconf || {
-	echo "*** No autoreconf found, please install it ***"
-	exit 1
+#
+# FIXME: Accept a command line and provide help and version messages
+# as usual.
+#
+
+test -n "${srcdir}" || srcdir=`dirname "$0"`
+test -n "${srcdir}" || srcdir='.'
+
+newline='
+'
+
+not_word='[^_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz]'
+
+echo_n() {
+    # Like `echo -n' but hopefully less system-dependent.
+    # (Unfortunately, it will remove _all_ newlines.)
+    echo ${1+"$@"} | tr -d "${newline}"
 }
 
-echo "running autoreconf --install --verbose"
-autoreconf --install --verbose || exit $?
+grep_word_quietly() {
+    pattern="${1}"
+    shift
+    if LC_ALL=C grep "^${pattern}\$" ${1+"$@"} \
+        2> /dev/null > /dev/null; then
+        true
+    elif LC_ALL=C grep "${not_word}${pattern}\$" ${1+"$@"} \
+        2> /dev/null > /dev/null; then
+        true
+    elif LC_ALL=C grep "^${pattern}${not_word}" ${1+"$@"} \
+        2> /dev/null > /dev/null; then
+        true
+    else
+        false
+    fi
+}
 
-cd $olddir
+have_autoconf_m4() {
+    test -d m4 -a -f "m4/${1}" || test -f "${1}"
+}
+
+need_sortsmill_tig() {
+    # If sortsmill-tig.m4 is included in the package, then we do not
+    # need TIG to do the autoreconf.
+    test -f configure.ac && \
+        grep_word_quietly 'StM_PROG_SORTSMILL_TIG' configure.ac  && \
+        ! have_autoconf_m4 sortsmill-tig.m4
+}
+
+need_pkg_config() {
+    # If pkg.m4 is included in the package, then we do not need
+    # pkg-config to do the autoreconf.
+    test -f configure.ac && \
+        grep_word_quietly \
+        'PKG_\(CHECK_MODULES\|PROG_PKG_CONFIG\|CHECK_EXISTS\|INSTALLDIR\|NOARCH_INSTALLDIR\|CHECK_VAR\)' \
+        configure.ac && \
+        ! have_autoconf_m4 pkg.m4
+}
+
+need_gnulib_tool() {
+    test -f m4/gnulib-cache.m4
+}
+
+need_intltoolize() {
+    if test -d po -a -f po/Makefile.in.in; then
+        grep '^#[ 	]*INTLTOOL_MAKEFILE[ 	]*$' po/Makefile.in.in \
+            2> /dev/null > /dev/null
+    else
+        false
+    fi
+}
+
+need_autoreconf() {
+    test -f configure.ac
+}
+
+require_command() {
+    echo_n "Checking for ${1}... "
+    if which "${1}" 2> /dev/null > /dev/null; then
+        which "${1}"
+    else
+        echo "not found"
+        echo ""
+        echo "***  ${1} was not found in \$PATH. Please install ${1}."
+        if test -n "${2}"; then
+            echo "***  See <${2}>"
+        fi
+        if test -n "${3}"; then
+            echo "***  ${3}"
+        fi
+        exit 1
+    fi
+}
+
+require_sortsmill_tig() {
+    require_command sortsmill-tig \
+        'https://bitbucket.org/sortsmill/sortsmill-tig'
+}
+
+require_pkg_config() {
+    require_command pkg-config \
+        'http://www.freedesktop.org/wiki/Software/pkg-config/' \
+        "Your operating system may have a \`pkg-config' or \`pkgconfig' package."
+}
+
+require_gnulib_tool() {
+    require_command gnulib-tool \
+        'http://www.gnu.org/software/gnulib/' \
+        "Your operating system may have a \`gnulib' package."
+}
+
+require_intltoolize() {
+    require_command intltoolize \
+        'http://freedesktop.org/wiki/Software/intltool/' \
+        "Your operating system may have an \`intltool' package."
+}
+
+require_autoreconf() {
+    require_command autoreconf \
+        'http://www.gnu.org/software/autoconf/' \
+        "Your operating system may have packages for GNU autoconf,
+***  automake, libtool, and gettext, some or all of which might
+***  be needed."
+}
+
+run_gnulib_tool() {
+    echo "Running gnulib-tool --update"
+    gnulib-tool --update || exit $?
+}
+
+run_intltoolize() {
+    echo "Running intltoolize --copy --force --automake"
+    intltoolize --copy --force --automake || exit $?
+}
+
+run_autoreconf() {
+    echo "Running autoreconf --install --verbose"
+    autoreconf --install --verbose || exit $?
+}
+
+# Run everything in a subshell, so the user does not get stuck in a
+# new directory if the process is interrupted.
+(
+    cd "${srcdir}"
+
+    need_sortsmill_tig && require_sortsmill_tig
+    need_pkg_config && require_pkg_config
+    need_gnulib_tool && require_gnulib_tool
+    need_intltoolize && require_intltoolize
+    need_autoreconf && require_autoreconf
+
+    need_gnulib_tool && run_gnulib_tool
+    need_intltoolize && run_intltoolize
+    need_autoreconf && run_autoreconf
+)
