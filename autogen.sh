@@ -1,7 +1,8 @@
 #!/bin/sh
 # Run this script to generate or regenerate the `configure' script,
-# for instance after cloning one of our Git, Mercurial, or Bazaar
-# repositories for this source code.
+# in cases where `autoreconf', etc., alone might not suffice,
+# for instance just after cloning one of our Git, Mercurial, or
+# Bazaar repositories.
 
 # Sorts Mill Autogen
 # <https://bitbucket.org/sortsmill/sortsmill-autogen>
@@ -17,12 +18,14 @@
 # Sorts Mill developers: please increase the serial number when you
 # make any significant change to this script in its own repository:
 #
-# serial 1
+# serial 2
 
 #
 # FIXME: Accept a command line and provide help and version messages
 # as usual.
 #
+
+progname=`basename "${0}"`
 
 test -n "${srcdir}" || srcdir=`dirname "$0"`
 test -n "${srcdir}" || srcdir='.'
@@ -59,6 +62,18 @@ have_autoconf_m4() {
     test -d m4 -a -f "m4/${1}" || test -f "${1}"
 }
 
+find_autoconf_m4() {
+    if test -d m4 -a -f "m4/${1}"; then
+        echo "m4/${1}"
+    elif test -f "${1}"; then
+        echo "${1}"
+    else
+        echo "${progname}: possible internal error: find_autoconf_m4 may have been called incorrectly."
+        echo "It also is possible the source files were modified while ${progname} was running."
+        exit 86
+    fi
+}
+
 need_sortsmill_tig() {
     # If sortsmill-tig.m4 is included in the package, then we do not
     # need TIG to do the autoreconf.
@@ -79,6 +94,15 @@ need_pkg_config() {
 
 need_gnulib_tool() {
     test -f m4/gnulib-cache.m4
+}
+
+need_gperf_for_gnulib() {
+    if have_autoconf_m4 gnulib-comp.m4; then
+        grep 'gperf' `find_autoconf_m4 gnulib-comp.m4` \
+            2> /dev/null > /dev/null
+    else
+        false
+    fi
 }
 
 need_intltoolize() {
@@ -129,6 +153,12 @@ require_gnulib_tool() {
         "Your operating system may have a \`gnulib' package."
 }
 
+require_gperf() {
+    require_command gperf \
+        'http://www.gnu.org/software/gperf/' \
+        "Your operating system may have a \`gperf' package."
+}
+
 require_intltoolize() {
     require_command intltoolize \
         'http://freedesktop.org/wiki/Software/intltool/' \
@@ -169,7 +199,10 @@ run_autoreconf() {
     need_intltoolize && require_intltoolize
     need_autoreconf && require_autoreconf
 
-    need_gnulib_tool && run_gnulib_tool
+    if need_gnulib_tool; then
+        run_gnulib_tool
+        need_gperf_for_gnulib && require_gperf
+    fi
     need_intltoolize && run_intltoolize
     need_autoreconf && run_autoreconf
 )
