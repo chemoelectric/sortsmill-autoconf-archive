@@ -19,7 +19,8 @@
 # script try to set them.
 #
 # Detection can be overridden by setting the cache variable
-# ac_cv_header_atomic_ops_h to `yes' or `no'.
+# ac_cv_header_atomic_ops_h to `yes' or `no'. A test can be forced by
+# `unset ac_cv_header_atomic_ops_h'.
 #
 # If the header <atomic_ops.h> is found, HAVE_ATOMIC_OPS_H is set to
 # 1, otherwise 0. HAVE_ATOMIC_OPS_H is passed to both AC_SUBST and
