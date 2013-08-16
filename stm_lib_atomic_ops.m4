@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 # StM_LIB_ATOMIC_OPS
 # ------------------
@@ -17,6 +17,9 @@
 # Users may set either or both of the precious variables
 # ATOMIC_OPS_CFLAGS and ATOMIC_OPS_LIBS, or one can let the configure
 # script try to set them.
+#
+# Detection can be overridden by setting the cache variable
+# ac_cv_header_atomic_ops_h to `yes' or `no'.
 #
 # If the header <atomic_ops.h> is found, HAVE_ATOMIC_OPS_H is set to
 # 1, otherwise 0. HAVE_ATOMIC_OPS_H is passed to both AC_SUBST and
@@ -35,7 +38,9 @@ AC_DEFUN([StM_LIB_ATOMIC_OPS],[
 
    __save_cflags="${CFLAGS}"
    CFLAGS="${CFLAGS} ${ATOMIC_OPS_CFLAGS}"
-   AC_CHECK_HEADERS([atomic_ops.h])
+   if test -z "${ac_cv_header_atomic_ops_h}"; then
+      AC_CHECK_HEADERS([atomic_ops.h])
+   fi
    CFLAGS="${__save_cflags}"
 
    HAVE_ATOMIC_OPS_H=0
@@ -44,14 +49,24 @@ AC_DEFUN([StM_LIB_ATOMIC_OPS],[
    AC_DEFINE_UNQUOTED([HAVE_ATOMIC_OPS_H],[${HAVE_ATOMIC_OPS_H}],
       [Define to 1 if we have the <atomic_ops.h> header file, to 0 otherwise.])
 
-   HAVE_ATOMIC_OPS_LIB=1
-   if test -z "${ATOMIC_OPS_LIBS}"; then
-      __save_libs="${LIBS}"
-      LIBS=
-      AC_SEARCH_LIBS([AO_locks],[atomic_ops])
-      ATOMIC_OPS_LIBS="${LIBS}"
-      test x"${ac_cv_search_AO_locks}" = xno && HAVE_ATOMIC_OPS_LIB=0
-      LIBS="${__save_libs}"
+   if test x"${ac_cv_header_atomic_ops_h}" = xyes; then
+      HAVE_ATOMIC_OPS_LIB=1
+      if test -z "${ATOMIC_OPS_LIBS}"; then
+         __save_libs="${LIBS}"
+         LIBS=
+         AC_SEARCH_LIBS([AO_locks],[atomic_ops])
+         ATOMIC_OPS_LIBS="${LIBS}"
+         test x"${ac_cv_search_AO_locks}" = xno && HAVE_ATOMIC_OPS_LIB=0
+         LIBS="${__save_libs}"
+      fi
+   else
+      # If we do not have the header, assume we do not have the
+      # support library, because we cannot use it, anyway.
+      HAVE_ATOMIC_OPS_LIB=0
+
+      # Ignore the precious variable settings.
+      ATOMIC_OPS_CFLAGS=
+      ATOMIC_OPS_LIBS=
    fi
 
    AC_SUBST([HAVE_ATOMIC_OPS_LIB])
