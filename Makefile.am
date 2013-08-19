@@ -42,6 +42,7 @@ dist_aclocal_DATA += stm_prog_sortsmill_changelogger.m4
 dist_aclocal_DATA += stm_prog_wget.m4
 
 dist_aclocal_DATA += stm_lib_atomic_ops.m4
+dist_aclocal_DATA += stm_lib_pcre.m4
 
 dist-hook: dist-changelog
 @dist_changelog_rules@
