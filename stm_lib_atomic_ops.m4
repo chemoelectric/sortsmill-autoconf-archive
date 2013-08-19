@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 # StM_LIB_ATOMIC_OPS
 # ------------------
@@ -37,12 +37,12 @@ AC_DEFUN([StM_LIB_ATOMIC_OPS],[
    AC_ARG_VAR([ATOMIC_OPS_LIBS],
       [linker flags for atomic_ops, overriding automatic detection])
 
-   __save_cflags="${CFLAGS}"
+   StM_LIB_ATOMIC_OPS__save_cflags="${CFLAGS}"
    CFLAGS="${CFLAGS} ${ATOMIC_OPS_CFLAGS}"
    if test -z "${ac_cv_header_atomic_ops_h}"; then
       AC_CHECK_HEADERS([atomic_ops.h])
    fi
-   CFLAGS="${__save_cflags}"
+   CFLAGS="${StM_LIB_ATOMIC_OPS__save_cflags}"
 
    HAVE_ATOMIC_OPS_H=0
    test x"${ac_cv_header_atomic_ops_h}" = xyes && HAVE_ATOMIC_OPS_H=1
@@ -53,12 +53,12 @@ AC_DEFUN([StM_LIB_ATOMIC_OPS],[
    if test x"${ac_cv_header_atomic_ops_h}" = xyes; then
       HAVE_ATOMIC_OPS_LIB=1
       if test -z "${ATOMIC_OPS_LIBS}"; then
-         __save_libs="${LIBS}"
+         StM_LIB_ATOMIC_OPS__save_libs="${LIBS}"
          LIBS=
          AC_SEARCH_LIBS([AO_locks],[atomic_ops])
          ATOMIC_OPS_LIBS="${LIBS}"
          test x"${ac_cv_search_AO_locks}" = xno && HAVE_ATOMIC_OPS_LIB=0
-         LIBS="${__save_libs}"
+         LIBS="${StM_LIB_ATOMIC_OPS__save_libs}"
       fi
    else
       # If we do not have the header, assume we do not have the
