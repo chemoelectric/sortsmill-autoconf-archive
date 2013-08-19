@@ -29,11 +29,38 @@
 #       .
 #       .
 #       .
-#    [C code that depends on threads support]
+#    [C code that depends on enabling of threads support]
 #       .
 #       .
 #       .
 #    @END_enable_threads@
+#       .
+#       .
+#       .
+#    [C code]
+#
+# A useful idiom is demonstrated by the following example:
+#
+#    StM_BEGIN_END_OPTION([NOT_enable_threads],
+#                         [test x"${enable_threads}" != xyes],
+#                         [--$1="${enable_threads}"])
+#
+# Then you can put the following in C code:
+#
+#
+#    [C code]
+#       .
+#       .
+#       .
+#    @BEGIN_NOT_enable_threads@
+#       .
+#       .
+#       .
+#    [C code that depends on disabling of threads support]
+#       .
+#       .
+#       .
+#    @END_NOT_enable_threads@
 #       .
 #       .
 #       .
