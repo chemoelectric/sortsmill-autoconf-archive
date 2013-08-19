@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 # StM_BEGIN_END_OPTION(option_name, condition, [configure_args])
 # --------------------------------------------------------------
@@ -25,7 +25,7 @@
 #       .
 #       .
 #       .
-#    @BEGIN_enable_threads@
+#    #@BEGIN_enable_threads@
 #       .
 #       .
 #       .
@@ -33,7 +33,7 @@
 #       .
 #       .
 #       .
-#    @END_enable_threads@
+#    #@END_enable_threads@
 #       .
 #       .
 #       .
@@ -52,7 +52,7 @@
 #       .
 #       .
 #       .
-#    @BEGIN_NOT_enable_threads@
+#    #@BEGIN_NOT_enable_threads@
 #       .
 #       .
 #       .
@@ -60,7 +60,7 @@
 #       .
 #       .
 #       .
-#    @END_NOT_enable_threads@
+#    #@END_NOT_enable_threads@
 #       .
 #       .
 #       .
@@ -68,11 +68,11 @@
 #
 AC_DEFUN([StM_BEGIN_END_OPTION],[
    if ( $2 ); then
-      BEGIN_$1='#if 1 /* enabled by configure'
-      END_$1='#endif /* enabled by configure'
+      BEGIN_$1='if 1 /* enabled by configure'
+      END_$1='endif /* enabled by configure'
    else
-      BEGIN_$1='#if 0 /* disabled by configure'
-      END_$1='#endif /* disabled by configure'
+      BEGIN_$1='if 0 /* disabled by configure'
+      END_$1='endif /* disabled by configure'
    fi
    m4_ifval([$3],[
       BEGIN_$1="${BEGIN_$1} $3"
