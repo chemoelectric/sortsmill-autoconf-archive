@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 3
+# serial 4
 
 # StM_LIB_ATOMIC_OPS
 # ------------------
@@ -43,6 +43,7 @@ AC_DEFUN([StM_LIB_ATOMIC_OPS],[
       AC_CHECK_HEADERS([atomic_ops.h])
    fi
    CFLAGS="${StM_LIB_ATOMIC_OPS__save_cflags}"
+   unset StM_LIB_ATOMIC_OPS__save_cflags
 
    HAVE_ATOMIC_OPS_H=0
    test x"${ac_cv_header_atomic_ops_h}" = xyes && HAVE_ATOMIC_OPS_H=1
@@ -59,6 +60,7 @@ AC_DEFUN([StM_LIB_ATOMIC_OPS],[
          ATOMIC_OPS_LIBS="${LIBS}"
          test x"${ac_cv_search_AO_locks}" = xno && HAVE_ATOMIC_OPS_LIB=0
          LIBS="${StM_LIB_ATOMIC_OPS__save_libs}"
+         unset StM_LIB_ATOMIC_OPS__save_libs
       fi
    else
       # If we do not have the header, assume we do not have the
