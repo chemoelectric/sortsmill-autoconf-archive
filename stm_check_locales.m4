@@ -23,7 +23,7 @@
 # Example:
 #
 # StM_CHECK_LOCALES([for any one UTF-8 locale],
-#                   [my_cv_utf8_locale],
+#                   [my_cv_locale_utf8],
 #                   [eo_EO eo_EO.UTF-8 fr_FR fr_FR.UTF-8, en_US en_US.UTF-8],
 #                   [UTF-8],
 #                   [1])
