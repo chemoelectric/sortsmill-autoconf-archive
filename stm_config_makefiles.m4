@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 
 dnl Convert, for instance, `a' --> 'a', `a:b:c:d' --> `a'
@@ -50,7 +50,7 @@ m4_define([__my_m4_config_file_retargetted],
 #           .
 #           .
 #
-AC_DEFUN([StM_CONFIG_MAKEFILES],[
+AC_DEFUN([StM_CONFIG_MAKEFILES],[{ :;
 
    # If no GNU Make is found, recommend it.
    if test -z m4_ifval([$3],[$3],["${_cv_gnu_make_command}"]) \
@@ -85,4 +85,4 @@ EOF
    # Create `GNUmakefile' or its substitute.
    AC_CONFIG_FILES(__my_m4_config_file_retargetted(m4_ifval([$1],[$1],[Makefile]),
                                                    m4_ifval([$2],[$2],[GNUmakefile])))
-])
+}])

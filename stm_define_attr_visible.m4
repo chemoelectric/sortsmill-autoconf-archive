@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 # StM_DEFINE_ATTR_VISIBLE([c_preprocessor_variable = `StM_ATTR_VISIBLE'])
 # -----------------------------------------------------------------------
@@ -19,11 +19,11 @@
 # http://www.gnu.org/software/gnulib/manual/gnulib.html#Exported-Symbols-of-Shared-Libraries
 # for advice on how to use the visibility attribute.
 #
-AC_DEFUN([StM_DEFINE_ATTR_VISIBLE],[
+AC_DEFUN([StM_DEFINE_ATTR_VISIBLE],[{ :;
    m4_ifval([$1],[$1],[StM_ATTR_VISIBLE])=''
    test x"${HAVE_VISIBILITY}" = x1 && \
       m4_ifval([$1],[$1],[StM_ATTR_VISIBLE])='__attribute__((__visibility__("default")))'
    AC_DEFINE_UNQUOTED(m4_ifval([$1],[$1],[StM_ATTR_VISIBLE]),
       [${m4_ifval([$1],[$1],[StM_ATTR_VISIBLE])}],
       [Define to the attribute for a visible symbol in a shared library.])
-])
+}])

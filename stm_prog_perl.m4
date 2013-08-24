@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 3
+# serial 4
 
 # StM_PROG_PERL
 # -------------
@@ -17,14 +17,14 @@
 # ac_cv_path_PERL. The test may be overridden by setting PERL or the
 # cache variable.
 #
-AC_DEFUN([StM_PROG_PERL],[
+AC_DEFUN([StM_PROG_PERL],[{ :;
    AC_REQUIRE([AC_PROG_EGREP])
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([PERL],[Perl interpreter command],
       [perl],[
          if LC_ALL=C LANG=C ${ac_path_PERL} --version 2>&1 | \
-                 LC_ALL=C LANG=C ${EGREP} -q -i '^This is perl'; then
+                 LC_ALL=C LANG=C ${EGREP} -i '^This is perl' 2> /dev/null > /dev/null; then
             ac_cv_path_PERL=${ac_path_PERL}
             ac_path_PERL_found=:
          fi
       ])
-])
+}])

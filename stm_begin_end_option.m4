@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 # StM_BEGIN_END_OPTION(option_name, condition, [configure_args])
 # --------------------------------------------------------------
@@ -66,7 +66,7 @@
 #       .
 #    [C code]
 #
-AC_DEFUN([StM_BEGIN_END_OPTION],[
+AC_DEFUN([StM_BEGIN_END_OPTION],[{ :;
    if ( $2 ); then
       BEGIN_$1='if 1 /* enabled by configure'
       END_$1='endif /* enabled by configure'
@@ -88,4 +88,4 @@ AC_DEFUN([StM_BEGIN_END_OPTION],[
       AM_SUBST_NOTMAKE([BEGIN_$1])
       AM_SUBST_NOTMAKE([END_$1])
    ])
-])
+}])

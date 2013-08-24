@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 #################################
 # Macros for working with PCRE  #
@@ -46,7 +46,7 @@
 #       #define PCRE_CONFIG_JITTARGET x86 64bit (little endian + unaligned)
 #       /* #undef PCRE_CONFIG__no_such_macro */
 #
-AC_DEFUN([StM_PCRE_CONFIG],[{
+AC_DEFUN([StM_PCRE_CONFIG],[{ :
    AC_CACHE_CHECK([the pcre_config value of $1],
       [stm_cv_lib_pcre_$1],
       [
@@ -164,7 +164,7 @@ return exit_status;
 #
 # The cache variable stm_cv_func_pcre_free_study is set either to
 # `yes' or to `no'.
-AC_DEFUN([StM_FUNC_PCRE_FREE_STUDY],[{
+AC_DEFUN([StM_FUNC_PCRE_FREE_STUDY],[{ :
    AC_CACHE_CHECK([for the pcre_free_study function],
       [stm_cv_func_pcre_free_study],[
          AC_LANG_PUSH([C])

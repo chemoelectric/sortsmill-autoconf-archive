@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 4
+# serial 5
 
 # StM_LIB_ATOMIC_OPS
 # ------------------
@@ -31,7 +31,7 @@
 # otherwise to `no'. HAVE_ATOMIC_OPS_LIB is passed to both AC_SUBST
 # and AC_DEFINE.
 #
-AC_DEFUN([StM_LIB_ATOMIC_OPS],[
+AC_DEFUN([StM_LIB_ATOMIC_OPS],[{ :
    AC_ARG_VAR([ATOMIC_OPS_CFLAGS],
       [C compiler flags for atomic_ops, overriding automatic detection])
    AC_ARG_VAR([ATOMIC_OPS_LIBS],
@@ -75,4 +75,4 @@ AC_DEFUN([StM_LIB_ATOMIC_OPS],[
    AC_SUBST([HAVE_ATOMIC_OPS_LIB])
    AC_DEFINE_UNQUOTED([HAVE_ATOMIC_OPS_LIB],[${HAVE_ATOMIC_OPS_LIB}],
       [Define to 1 if we have the libatomic_ops support library for <atomic_ops.h>, to 0 otherwise.])
-])
+}])

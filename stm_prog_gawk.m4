@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 # StM_PROG_GAWK
 # -------------
@@ -17,7 +17,7 @@
 # ac_cv_path_GAWK. The test may be overridden by setting GAWK or the
 # cache variable.
 #
-AC_DEFUN([StM_PROG_GAWK],[
+AC_DEFUN([StM_PROG_GAWK],[{ :
    AC_REQUIRE([AC_PROG_EGREP])
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([GAWK],[GNU implementation of Awk],
       [gawk awk],[
@@ -25,9 +25,9 @@ AC_DEFUN([StM_PROG_GAWK],[
          if LC_ALL=C LANG=C ${ac_path_GAWK} -- \
                  'BEGIN {s@<:@1@:>@="b"; s@<:@-2@:>@="a"; n=asorti(s,t); dnl
                          print s@<:@t@<:@1@:>@@:>@, s@<:@t@<:@2@:>@@:>@}' | \
-                 LC_ALL=C LANG=C ${EGREP} -q '^a b$'; then
+                 LC_ALL=C LANG=C ${EGREP} '^a b$' 2> /dev/null > /dev/null; then
             ac_cv_path_GAWK=${ac_path_GAWK}
             ac_path_GAWK_found=:
          fi
       ])
-])
+}])

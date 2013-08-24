@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 # Try to convert a space-and-comma-separated list into a normalized
 # space-separated list. (If you are not forgiving of the list format,
@@ -107,9 +107,8 @@ zu_ZA eo_EO eo_EO.UTF-8])
 #                   [UTF-8],
 #                   [1])
 #
-AC_DEFUN([StM_CHECK_LOCALES],[
+AC_DEFUN([StM_CHECK_LOCALES],[{ :;
    AC_REQUIRE([AC_PROG_SED])
-   { :;
    AC_CACHE_CHECK(AS_ESCAPE([$1]),[$2],[
       AC_LANG_PUSH([C])
 

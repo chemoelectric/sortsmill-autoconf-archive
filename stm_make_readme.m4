@@ -7,13 +7,13 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 # FIXME: Document this macro.
 
 # StM_MAKE_README(subst-var, manpage, [readme-file-var = `PACKAGE_README'], [readme-target = `readme'])
 # -----------------------------------------------------------------------------------------------------
-AC_DEFUN([StM_MAKE_README],[
+AC_DEFUN([StM_MAKE_README],[{ :;
    $1="
 .PHONY: m4_ifval([$4],[$4],[readme])
 m4_ifval([$4],[$4],[readme]): $2
@@ -31,4 +31,4 @@ dnl Turn off hyphenation.
 "
    AC_SUBST([$1])
    AM_SUBST_NOTMAKE([$1])dnl  Requires Automake >= 1.11
-])
+}])

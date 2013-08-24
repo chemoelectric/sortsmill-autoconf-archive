@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 # StM_PROG_GNU_INDENT
 # -------------
@@ -17,7 +17,7 @@
 # in ac_cv_path_GNU_INDENT. The test may be overridden by setting
 # GNU_INDENT or the cache variable.
 #
-AC_DEFUN([StM_PROG_GNU_INDENT],[
+AC_DEFUN([StM_PROG_GNU_INDENT],[{ :;
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([GNU_INDENT],[GNU implementation of indent],
       [indent gindent],[
          # Run a command that gnu_indent, but neither mawk nor nawk, can execute.
@@ -40,4 +40,4 @@ EOF
          fi
          rm -f conftest.out
       ])
-])
+}])

@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 4
+# serial 5
 
 # StM_PROG_SORTSMILL_CHANGELOGGER
 # -------------------------------
@@ -18,13 +18,14 @@
 # ac_cv_path_SORTSMILL_CHANGELOGGER. The test may be overridden by
 # setting SORTSMILL_CHANGELOGGER or the cache variable.
 #
-AC_DEFUN([StM_PROG_SORTSMILL_CHANGELOGGER],[
+AC_DEFUN([StM_PROG_SORTSMILL_CHANGELOGGER],[{ :
    AC_REQUIRE([AC_PROG_FGREP])
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([SORTSMILL_CHANGELOGGER],
       [Sorts Mill Changelogger command],
       [sortsmill-changelogger],
       [if LC_ALL=C LANG=C ${ac_path_SORTSMILL_CHANGELOGGER} -V 2>&1 | \
-               LC_ALL=C LANG=C ${FGREP} -q -i 'Barry Schwartz'; then
+               LC_ALL=C LANG=C ${FGREP} -i 'Barry Schwartz' 2> /dev/null > /dev/null; then
           ac_cv_path_SORTSMILL_CHANGELOGGER="${ac_path_SORTSMILL_CHANGELOGGER}"
           ac_path_SORTSMILL_CHANGELOGGER_found=:
-       fi])])
+       fi])
+}])
