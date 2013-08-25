@@ -30,6 +30,7 @@ dist_aclocal_DATA += stm_compiler_flags.m4
 dist_aclocal_DATA += stm_config_makefiles.m4
 dist_aclocal_DATA += stm_define_attr_visible.m4
 dist_aclocal_DATA += stm_indent_pro_links.m4
+dist_aclocal_DATA += stm_m4sugar.m4
 dist_aclocal_DATA += stm_make_readme.m4
 
 dist_aclocal_DATA += stm_path_progs_cached_and_precious.m4
