@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 # StM_PROG_M4
 # -----------
@@ -22,9 +22,34 @@
 # no special attempt is made to find GNU m4 instead of some other
 # implementation.
 #
-AC_DEFUN([StM_PROG_M4],[{ :;
+AC_DEFUN([StM_PROG_M4],[{ :
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([M4],[m4 macro processor],
-      [m4],
-      [ac_cv_path_M4="${ac_path_M4}"
-       ac_path_M4_found=:])
+      [m4],[
+         ac_cv_path_M4="${ac_path_M4}"
+         ac_path_M4_found=:
+      ])
+}])
+
+# StM_PROG_GNU_M4
+# ---------------
+#
+# Set M4 to the path of the first GNU m4 in the PATH, or to an empty
+# string if GNU m4 is not found. The result is cached in
+# ac_cv_path_GNU_M4. The test may be overridden by setting GNU_M4 or
+# the cache variable.
+#
+# Running m4 from inside another run of m4 is problematic, so the
+# checking is done by running `m4 --version' and examining the
+# message, rather than by running an m4 script.
+#
+AC_DEFUN([StM_PROG_GNU_M4],[{ :
+   AC_REQUIRE([AC_PROG_GREP])
+   StM_PATH_PROGS_CACHED_AND_PRECIOUS([GNU_M4],[GNU m4 macro processor],
+      [m4 gm4 gnum4],[
+         if LC_ALL=C LANG=C ${ac_path_GNU_M4} --version 2>&1 | \
+               LC_ALL=C LANG=C ${GREP} -i '^m4 (GNU M4)' 2> /dev/null > /dev/null; then
+            ac_cv_path_GNU_M4="${ac_path_GNU_M4}"
+            ac_path_GNU_M4_found=:
+         fi
+      ])
 }])
