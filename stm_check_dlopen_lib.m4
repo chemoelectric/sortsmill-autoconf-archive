@@ -28,6 +28,9 @@
 # sets the cache variable
 # stm_cv_dlopen__usr_lib_libxine_so_RTLD_LAZY_RTLD_GLOBAL.
 #
+# NOTE: You may have to add -ldl to your LIBS before the call to this
+# macro.
+#
 AC_DEFUN([StM_CHECK_DLOPEN_LIB],[{ :
    m4_pushdef([cachevar],[AS_TR_SH([stm_cv_dlopen_$1_[]m4_translit([$2],[
  	])])])
