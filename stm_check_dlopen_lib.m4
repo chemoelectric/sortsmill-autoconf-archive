@@ -7,14 +7,14 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
-# StM_CHECK_DLOPEN_LIB(library, mode)
-# -----------------------------------
+# StM_CHECK_DLOPEN_LIB(library, mode, [ldflags])
+# ----------------------------------------------
 #
 # An explanatory example:
 #
-#    StM_CHECK_DLOPEN_LIB([libxine.so], [RTLD_LAZY | RTLD_GLOBAL])
+#    StM_CHECK_DLOPEN_LIB([libxine.so], [RTLD_LAZY | RTLD_GLOBAL], [-ldl])
 #
 # sets the cache variable
 # stm_cv_dlopen_libxine_so_RTLD_LAZY_RTLD_GLOBAL to `yes' or `no',
@@ -23,15 +23,22 @@
 #
 # A full path can be used:
 #
-#    StM_CHECK_DLOPEN_LIB([/usr/lib/libxine.so], [RTLD_LAZY | RTLD_GLOBAL])
+#    StM_CHECK_DLOPEN_LIB([/usr/lib/libxine.so], [RTLD_LAZY | RTLD_GLOBAL], [-ldl])
 #
 # sets the cache variable
 # stm_cv_dlopen__usr_lib_libxine_so_RTLD_LAZY_RTLD_GLOBAL.
 #
-# NOTE: You may have to add -ldl to your LIBS before the call to this
-# macro.
+# If you know -ldl is in LIBS or is not needed then you can leave out
+# the third argument:
+#
+#    StM_CHECK_DLOPEN_LIB([libxine.so], [RTLD_LAZY | RTLD_GLOBAL])
 #
 AC_DEFUN([StM_CHECK_DLOPEN_LIB],[{ :
+   m4_ifnblank([$3],[
+      __stm_check_dlopen_lib_saved_libs="${LIBS}"
+      LIBS="$3 ${LIBS}"
+   ])
+
    m4_pushdef([cachevar],[AS_TR_SH([stm_cv_dlopen_$1_[]m4_translit([$2],[
  	])])])
 
@@ -63,4 +70,9 @@ if (error != 0)
    ])
 
    m4_popdef([cachevar])
+
+   m4_ifnblank([$3],[
+      LIBS="${__stm_check_dlopen_lib_saved_libs}"
+      unset __stm_check_dlopen_lib_saved_libs
+   ])
 }])
