@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 # StM_M4SUGAR
 # -----------
@@ -28,8 +28,8 @@
 # expands to the equivalent of
 #
 #    %.c: %.c.m4
-#        $(AM_V_M4SUGAR)$(TRANSLATE_M4SUGAR) < '$$<' > '$$@-tmp'
-#        mv '$$@-tmp' '$$@'
+#        $(AM_V_M4SUGAR)$(TRANSLATE_M4SUGAR) < '$<' > '$@-tmp'
+#        mv '$@-tmp' '$@'
 #
 # StM_M4SUGAR requires and so creates a helper script called
 # `quadrigraph-tool', putting it in $(top_builddir). Be sure to add it
@@ -64,5 +64,5 @@ EOF
    AC_SUBST([AM_V_M4SUGAR_0],['@echo "  M4SUGAR " @S|@@;'])
 
    AC_SUBST([m4sugar_rule],
-      ["\@S|@(1): \@S|@(2); \@S|@(AM_V_M4SUGAR)\@S|@(TRANSLATE_M4SUGAR) < '\@S|@\@S|@<' > '\@S|@\@S|@@-tmp'; mv '\@S|@\@S|@@-tmp' '\@S|@\@S|@@'"])
+      ["\@S|@(1): \@S|@(2); \@S|@\@S|@(AM_V_M4SUGAR)\@S|@\@S|@(TRANSLATE_M4SUGAR) < '\@S|@\@S|@<' > '\@S|@\@S|@@-tmp'; mv '\@S|@\@S|@@-tmp' '\@S|@\@S|@@'"])
 }])
