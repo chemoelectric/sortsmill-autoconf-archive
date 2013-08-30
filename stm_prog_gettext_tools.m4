@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 # StM_PROG_XGETTEXT, StM_PROG_MSGMERGE, etc.
 # ------------------------------------------
@@ -21,7 +21,7 @@
 #
 AC_DEFUN([_stm_gettext_tools_prog],[{ :
    AC_REQUIRE([AC_PROG_GREP])
-   m4_pushdef([_tool],AS_TR_SH(m4_car([$1])))
+   m4_pushdef([_tool],AS_TR_SH(m4_car(m4_translit(m4_normalize([$1]),[ ],[,]))))
    m4_pushdef([_TOOL],m4_toupper(_tool))
    StM_PATH_PROGS_CACHED_AND_PRECIOUS(_TOOL,[GNU ]_tool[ command],
       [$1],[
