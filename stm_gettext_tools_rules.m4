@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 3
 
 # StM_MSGFMT_RULE(gnu_make_macro_name)
 # ------------------------------------
@@ -51,16 +51,17 @@ AC_DEFUN([StM_MSGFMT_RULE],[{ :
 #
 #   # In Makefile.am, Makefile.in, or Makefile:
 #   $(call my_msgmerge_rule, \
-#       $(srcdir)/en_US.po $(srcdir)/fr_FR.po, \
-#       $(srcdir)/mydomain.pot, --backup=numbered)
+#       $(srcdir)/en_US.po $(srcdir)/fr_FR.po: $(srcdir)/mydomain.pot, \
+#       --backup=numbered)
 #
 #   # This expands, for instance, to the equivalent of:
-#   $(srcdir)/en_US.po: $(srcdir)/mydomain.pot | Makefile GNUmakefile
+#   $(srcdir)/en_US.po: $(srcdir)/mydomain.pot
 #       msgmerge --backup=numbered --update --force-po $(srcdir)/en_US.po $(srcdir)/mydomain.pot
 #       touch $(srcdir)/en_US.po
 #
 AC_DEFUN([StM_MSGMERGE_RULE],[{ :
    AC_REQUIRE([StM_PROG_MSGMERGE])
+   AC_REQUIRE([StM_RULE_PARTS_MACROS])
 
    if test -z "${MSGMERGE}"; then
       AC_MSG_ERROR([msgmerge from GNU gettext is required.
@@ -69,7 +70,7 @@ AC_DEFUN([StM_MSGMERGE_RULE],[{ :
    fi
 
    AC_SUBST([$1],
-      ["\@S|@(strip \@S|@1): \@S|@2; \@S|@\@S|@(MSGMERGE) \@S|@3 --update --force-po '\@S|@\@S|@@' \@S|@2 && touch '\@S|@\@S|@@'"])
+      ["\@S|@(strip \@S|@1); \@S|@\@S|@(MSGMERGE) \@S|@2 --update --force-po '\@S|@\@S|@@' '\@S|@\@S|@<' && touch '\@S|@\@S|@@'"])
 }])
 
 # StM_XGETTEXT_RULE(gnu_make_macro_name)
@@ -80,7 +81,7 @@ AC_DEFUN([StM_MSGMERGE_RULE],[{ :
 #
 #   # In Makefile.am, Makefile.in, or Makefile:
 #   $(call my_xgettext_rule, \
-#       $(srcdir)/mydomain.pot, srcfile1.scm srcfile2.c srcfile3.h, \
+#       $(srcdir)/mydomain.pot: srcfile1.scm srcfile2.c srcfile3.h, \
 #       --keyword=_ --keyword=N_ --add-location --from-code=UTF-8)
 #
 # Roughly, this expands to:
@@ -118,9 +119,9 @@ AC_DEFUN([StM_XGETTEXT_RULE],[{ :
    # into the $(srcdir).
    AC_SUBST([$1],
       m4_flatten(["\
-\@S|@(strip \@S|@1): \@S|@2; \
-	@(echo \"Running \@S|@\@S|@(XGETTEXT) -o \@S|@\@S|@(notdir \@S|@\@S|@@)-tmp \@S|@3 --force-po \@S|@\@S|@^)\" || :) && \
-	\@S|@\@S|@(XGETTEXT) -o \@S|@\@S|@(notdir \@S|@\@S|@@)-tmp \@S|@3 --force-po \@S|@\@S|@^ && \
+\@S|@(strip \@S|@1); \
+	@(echo \"Running \@S|@\@S|@(XGETTEXT) -o \@S|@\@S|@(notdir \@S|@\@S|@@)-tmp \@S|@2 --force-po \@S|@\@S|@^)\" || :) && \
+	\@S|@\@S|@(XGETTEXT) -o \@S|@\@S|@(notdir \@S|@\@S|@@)-tmp \@S|@2 --force-po \@S|@\@S|@^ && \
 	if test -f '\@S|@\@S|@@'; then \
 		\@S|@\@S|@(SED) -e '/^\"POT-Creation-Date:/{d;q}' '\@S|@\@S|@@' > '\@S|@\@S|@(notdir \@S|@\@S|@@)-datelesstmp' && \
 		\@S|@\@S|@(SED) -e '/^\"POT-Creation-Date:/{d;q}' '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp' > '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp-datelesstmp' && \
