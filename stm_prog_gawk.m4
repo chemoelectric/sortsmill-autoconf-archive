@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 3
+# serial 4
 
 # StM_PROG_GAWK
 # -------------
@@ -22,7 +22,7 @@ AC_DEFUN([StM_PROG_GAWK],[{ :
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([GAWK],[GNU implementation of Awk],
       [gawk awk],[
          # Run a command that gawk, but neither mawk nor nawk, can execute.
-         if LC_ALL=C LANG=C ${ac_path_GAWK} -- \
+         if LC_ALL=C LANG=C ${ac_path_GAWK} \
                  'BEGIN {s@<:@1@:>@="b"; s@<:@-2@:>@="a"; n=asorti(s,t); dnl
                          print s@<:@t@<:@1@:>@@:>@, s@<:@t@<:@2@:>@@:>@}' | \
                  LC_ALL=C LANG=C ${EGREP} '^a b$' 2> /dev/null > /dev/null; then
