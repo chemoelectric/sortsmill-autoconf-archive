@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 5
+# serial 6
 
 # StM_LIB_ATOMIC_OPS
 # ------------------
@@ -38,7 +38,7 @@ AC_DEFUN([StM_LIB_ATOMIC_OPS],[{ :
       [linker flags for atomic_ops, overriding automatic detection])
 
    StM_LIB_ATOMIC_OPS__save_cflags="${CFLAGS}"
-   CFLAGS="${CFLAGS} ${ATOMIC_OPS_CFLAGS}"
+   CFLAGS="${ATOMIC_OPS_CFLAGS} ${CFLAGS}"
    if test -z "${ac_cv_header_atomic_ops_h}"; then
       AC_CHECK_HEADERS([atomic_ops.h])
    fi
