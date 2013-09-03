@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 # StM_INDENT_PRO_LINKS(dir1 dir2 ...)
 # -----------------------------------
@@ -18,7 +18,7 @@
 #
 AC_DEFUN([StM_INDENT_PRO_LINKS],[{ :;
 
-   AC_SUBST([INDENT_PRO_DIRS],["$1"])
+   AC_SUBST([INDENT_PRO_DIRS], m4_flatten(['$1']))
 
    AC_CONFIG_COMMANDS([.indent.pro],[
 
