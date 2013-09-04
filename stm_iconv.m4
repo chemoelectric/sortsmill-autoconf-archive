@@ -7,35 +7,45 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 ##################################
 # Macros for working with iconv  #
 ##################################
 
-# StM_ICONV_OPEN_CHECK_CONVERSION(encoding1, encoding2)
-# -----------------------------------------------------
+# StM_ICONV_OPEN_CHECK_CONVERSION(encoding1, encoding2, [target_suffix])
+# --------------------------------------------------------------------
 #
 # Test if iconv_open(3) can open both ways for conversion between two
 # encodings.
 #
 # Sets the cache variable
-# stm_cv_func_iconv_open_<ENCODING1>_and_<ENCODING2> to `yes' or `no'.
+# stm_cv_func_iconv_open_<ENCODING1>_and_<ENCODING2> or
+# stm_cv_func_iconv_open_<ENCODING1>_and_<ENCODING2>_with_<TARGET_SUFFIX>
+# to `yes' or `no'
 #
-# AC_DEFINEs HAVE_ICONV_OPEN_<ENCODING1>_AND_<ENCODING2> to `1' or `0'.
+# AC_DEFINEs HAVE_ICONV_OPEN_<ENCODING1>_AND_<ENCODING2> or
+# HAVE_ICONV_OPEN_<ENCODING1>_AND_<ENCODING2>_with_<TARGET_SUFFIX> to
+# `1' or `0'.
 #
 AC_DEFUN([StM_ICONV_OPEN_CHECK_CONVERSION],[{ :
    AC_LANG_PUSH([C])
-   m4_pushdef([cachevar], AS_TR_SH([stm_cv_func_iconv_open_$1_and_$2]))                                               
+   m4_pushdef([cachevar],
+      m4_ifnblank([$3],
+         AS_TR_SH([stm_cv_func_iconv_open_$1_and_$2_with_$3]),
+         AS_TR_SH([stm_cv_func_iconv_open_$1_and_$2])))
 
-   AC_CACHE_CHECK([whether iconv_open can open both ways for conversion between $1 and $2],
+   AC_CACHE_CHECK(
+      m4_ifnblank([$3],
+         [whether iconv_open can open for $1 and $2 with target suffix $3],
+         [whether iconv_open can open for $1 and $2]),
       cachevar,[
       AC_RUN_IFELSE([
          AC_LANG_PROGRAM([
-@%:@       include <iconv.h>
+@%:@        include <iconv.h>
          ],[
-           return (iconv_open("$1", "$2") == (iconv_t) -1
-                   || iconv_open("$2", "$1") == (iconv_t) -1) ? 1 : 0;
+            return (iconv_open("$1$3", "$2") == (iconv_t) -1
+                    || iconv_open("$2$3", "$1") == (iconv_t) -1) ? 1 : 0;
          ])
       ],
          eval cachevar=yes,
@@ -52,7 +62,9 @@ AC_DEFUN([StM_ICONV_OPEN_CHECK_CONVERSION],[{ :
    fi
    AC_DEFINE_UNQUOTED(AS_TR_CPP([HAVE_ICONV_OPEN_$1_AND_$2]),
       [${__stm_iconv_open_check_conversion__n}],
-      [Define to 1 if iconv_open can open both ways for conversion between $1 and $2; otherwise define to 0.])
+      m4_ifnblank([$3],
+         [Define to 1 if iconv_open can open for $1 and $2 with target suffix; otherwise define to 0.],
+         [Define to 1 if iconv_open can open for $1 and $2; otherwise define to 0.]))
    AS_UNSET([__stm_iconv_open_check_conversion__can_name])
    AS_UNSET([__stm_iconv_open_check_conversion__can])
    AS_UNSET([__stm_iconv_open_check_conversion__n])
