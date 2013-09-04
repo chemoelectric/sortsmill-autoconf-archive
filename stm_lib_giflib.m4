@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 # FIXME: Document these.
 
@@ -42,13 +42,13 @@ foo.Function=3;
 AC_DEFUN([StM_FUNC_DGIFOPENFILENAME_ERROR_RETURN],[{ :
    AC_CACHE_CHECK([whether DGifOpenFileName takes an error return parameter (giflib >= 5)],
       [stm_cv_func_dgifopenfilename_error_return],[
-      AC_LINK_IFELSE([
+      AC_COMPILE_IFELSE([
          AC_LANG_PROGRAM([
 @%:@include <stdio.h>
 @%:@include <gif_lib.h>
          ],[
 int error;
-(void) DGifOpenFileName("filename", &error);
+(void) DGifOpenFileName ("filename", &error);
          ])
       ],[
          stm_cv_func_dgifopenfilename_error_return=yes
