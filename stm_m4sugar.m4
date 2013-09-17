@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 # StM_M4SUGAR
 # -----------
@@ -28,8 +28,7 @@
 # expands to the equivalent of
 #
 #    %.c: %.c.m4
-#        $(AM_V_M4SUGAR)$(TRANSLATE_M4SUGAR) < '$<' > '$@-tmp'
-#        mv '$@-tmp' '$@'
+#        $(AM_V_M4SUGAR)$(TRANSLATE_M4SUGAR) < '$<' > '$@-tmp'; mv '$@-tmp' '$@'
 #
 # StM_M4SUGAR requires and so creates a helper script called
 # `quadrigraph-tool', putting it in $(top_builddir). Be sure to add it
