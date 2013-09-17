@@ -52,6 +52,7 @@ dist_aclocal_DATA += stm_prog_m4.m4
 dist_aclocal_DATA += stm_prog_perl.m4
 dist_aclocal_DATA += stm_prog_sortsmill_changelogger.m4
 dist_aclocal_DATA += stm_prog_sortsmill_core_guile.m4
+dist_aclocal_DATA += stm_prog_sortsmill_guile_mkdep.m4
 dist_aclocal_DATA += stm_prog_wget.m4
 
 dist_aclocal_DATA += stm_lib_atomic_ops.m4
