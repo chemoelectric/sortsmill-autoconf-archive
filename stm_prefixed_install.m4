@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 # StM_PREFIXED_INSTALL
 # --------------------
@@ -35,7 +35,8 @@
 #
 # Notice the (mis)spelling with `Z' instead of `S'. If we had used an
 # `S', Automake would have intercepted the variable, which is not what
-# we want.
+# we want. Similarly, one would write prefixed_foo_bar_DATAZ,
+# prefixed_foo_bar_PROGRAMZ, or prefixed_foo_bar_SCRIPTZ.
 #
 # BUGS: Currently we cannot handle libraries.
 #
