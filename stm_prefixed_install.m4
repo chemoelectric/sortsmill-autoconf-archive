@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 # StM_PREFIXED_INSTALL
 # --------------------
@@ -57,12 +57,14 @@ AC_DEFUN([StM_PREFIXED_INSTALL], [if true; then
    AC_SUBST([stm__prefixed_install],
    ["AS_ESCAPE([install-$(call stm__prefixed_var,$(1),$(2),$(3)): \
         $(addprefix $(strip $(1))/,$(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))); \
-    @if true; then \
-    $(foreach f, $(addprefix $(strip $(1))/,$(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))), \
-        $(MKDIR_P) '$(DESTDIR)$($(strip $(2))dir)/$(dir $(f))'; \
-        expr "$(INSTALL_$(strip $(3))) '$(call stm__prefixed_install__find,$(f))' '$(DESTDIR)$($(strip $(2))dir)/$(dir $(f))'" : '\(.*\)'; \
-        $(INSTALL_$(strip $(3))) '$(call stm__prefixed_install__find,$(f))' \
-            '$(DESTDIR)$($(strip $(2))dir)/$(dir $(f))' || exit $$$$?;) fi])"])
+    $(if $(strip $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))), \
+       @if true; then \
+          $(foreach f, $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3)), \
+             $(MKDIR_P) '$(DESTDIR)$($(strip $(2))dir)/$(dir $(f))'; \
+             expr "$(INSTALL_$(strip $(3))) '$(call stm__prefixed_install__find,$(strip $(1))/$(f))' '$(DESTDIR)$($(strip $(2))dir)/$(dir $(f))'" : '\(.*\)'; \
+             $(INSTALL_$(strip $(3))) '$(call stm__prefixed_install__find,$(strip $(1))/$(f))' \
+                '$(DESTDIR)$($(strip $(2))dir)/$(dir $(f))' || exit $$$$?;) \
+       fi)])"])
 
    # FIXME: This is inadequate for libraries, which must be installed
    # with libtool.
