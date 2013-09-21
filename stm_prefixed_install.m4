@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 4
+# serial 5
 
 # StM_PREFIXED_INSTALL
 # --------------------
@@ -76,8 +76,9 @@ AC_DEFUN([StM_PREFIXED_INSTALL], [if true; then
    ["AS_ESCAPE([uninstall-$(call stm__prefixed_var,$(1),$(2),$(3)): ; \
     $(if $(strip $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))), \
         -@if true; then \
-            $(patsubst %,expr "rm -f '$(DESTDIR)$($(strip $(2))dir)/%'" : '\(.*\)'; \
-                         rm -f '$(DESTDIR)$($(strip $(2))dir)/%';, \
+            $(patsubst %,expr "rm -f '$(DESTDIR)$($(strip $(2))dir)/%'" : '\(.*\)';, \
+              $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))) \
+            $(patsubst %,rm -f '$(DESTDIR)$($(strip $(2))dir)/%';, \
               $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))) \
         fi)])"])
 
