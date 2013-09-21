@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 3
+# serial 4
 
 # StM_MSGFMT_RULE(gnu_make_macro_name)
 # ------------------------------------
@@ -61,7 +61,6 @@ AC_DEFUN([StM_MSGFMT_RULE],[{ :
 #
 AC_DEFUN([StM_MSGMERGE_RULE],[{ :
    AC_REQUIRE([StM_PROG_MSGMERGE])
-   AC_REQUIRE([StM_RULE_PARTS_MACROS])
 
    if test -z "${MSGMERGE}"; then
       AC_MSG_ERROR([msgmerge from GNU gettext is required.
