@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 3
+# serial 4
 
 # StM_INDENT_PRO_LINKS(dir1 dir2 ...)
 # -----------------------------------
@@ -16,7 +16,7 @@
 #
 # FIXME: Document this macro more thoroughly.
 #
-AC_DEFUN([StM_INDENT_PRO_LINKS],[{ :;
+AC_DEFUN([StM_INDENT_PRO_LINKS],[if true; then
 
    AC_SUBST([INDENT_PRO_DIRS], m4_flatten(['$1']))
 
@@ -32,7 +32,8 @@ AC_DEFUN([StM_INDENT_PRO_LINKS],[{ :;
                :
             else
                (cd "${ac_srcdir}/${dir}" && \
-                  ${LN_S} "${ac_top_srcdir}"/.indent.pro .indent.pro)
+                  (${LN_S} "${ac_top_srcdir}"/.indent.pro .indent.pro || : )) \
+                     > /dev/null 2> /dev/null
             fi
          fi
       done
@@ -50,7 +51,8 @@ AC_DEFUN([StM_INDENT_PRO_LINKS],[{ :;
             test -d "${dir}" || AS_MKDIR_P(["${dir}"])
             rm -f "${ac_builddir}/${dir}/.indent.pro"
             (cd "${ac_builddir}/${dir}" && \
-               ${LN_S} "${ac_abs_top_srcdir}/${dir}/.indent.pro" .indent.pro)
+               (${LN_S} "${ac_abs_top_srcdir}/${dir}/.indent.pro" .indent.pro || : )) \
+                  > /dev/null 2> /dev/null
          done
       fi
    ],[
@@ -78,4 +80,4 @@ clean-indent-pro-files:
 '
    AC_SUBST([indent_pro_files_rules],["${indent_pro_files_rules}"])
    AM_SUBST_NOTMAKE([indent_pro_files_rules])
-}])
+fi])
