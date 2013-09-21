@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 # StM_STANDARD_CONFIGMAKE_VARIABLES
 # ---------------------------------
@@ -27,17 +27,21 @@ fi])
 # StM_CONFIGMAKE_C_DEFINES
 # ------------------------
 #
-# Defines a GNU Make macro, `configmake_c_defines'.
+# Defines GNU Make variables, `configmake_c_defines' and
+# `configmake_c_defines_unquoted'.
 #
 # For example, calling
 #
 #    $(call configmake_c_defines, PREFIX_, bindir libdir PACKAGE, _SUFFIX)
+#    $(call configmake_c_defines_unquoted, PREFIX_, numval1 NUMVAL2, _SUFFIX)
 #
 # results in shell code to send
 #
 #    #define PREFIX_BINDIR_SUFFIX "$(bindir)"
 #    #define PREFIX_LIBDIR_SUFFIX "$(libdir)"
 #    #define PREFIX_PACKAGE_SUFFIX "$(PACKAGE)"
+#    #define PREFIX_NUMVAL1_SUFFIX $(numval1)
+#    #define PREFIX_NUMVAL2_SUFFIX $(NUMVAL2)
 #
 # to standard output.
 #
@@ -49,7 +53,43 @@ fi])
 AC_DEFUN([StM_CONFIGMAKE_C_DEFINES],[if true; then
    AC_REQUIRE([StM_STANDARD_CONFIGMAKE_VARIABLES])
    AC_SUBST([__configmake_cdef],
-      ['echo "\@%:@define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"@<:@a-z@:>@\" \"@<:@A-Z@:>@\")$(strip $(3)) \"$($(strip $(2)))\""'])
+      ['expr "X\@%:@define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"@<:@a-z@:>@\" \"@<:@A-Z@:>@\")$(strip $(3)) \"$($(strip $(2)))\"" : "X\\(.*\\)"'])
    AC_SUBST([configmake_c_defines],
       ['if true; then $(foreach dirvar, $(2), $(call __configmake_cdef, $(1), $(dirvar), $(3));) fi'])
+   AC_SUBST([__configmake_unquoted_cdef],
+      ['expr "X\@%:@define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"@<:@a-z@:>@\" \"@<:@A-Z@:>@\")$(strip $(3)) $($(strip $(2)))" : "X\\(.*\\)"'])
+   AC_SUBST([configmake_c_defines_unquoted],
+      ['if true; then $(foreach dirvar, $(2), $(call __configmake_unquoted_cdef, $(1), $(dirvar), $(3));) fi'])
+fi])
+
+# StM_CONFIGMAKE_M4SUGAR_DEFINES
+# ------------------------------
+#
+# Defines a GNU Make macro, `configmake_m4sugar_defines'.
+#
+# For example, calling
+#
+#    $(call configmake_m4sugar_defines, PREFIX_, bindir libdir PACKAGE, _SUFFIX)
+#
+# results in shell code to send
+#
+#    m4_define([PREFIX_BINDIR_SUFFIX],[$(bindir)])dnl
+#    m4_define([PREFIX_LIBDIR_SUFFIX],[$(libdir)])dnl
+#    m4_define([PREFIX_PACKAGE_SUFFIX],[$(PACKAGE)])dnl
+#
+# to standard output.
+#
+# You can leave out the third (`_SUFFIX') argument.
+#
+# As a convenience, this macro calls StM_STANDARD_CONFIGMAKE_VARIABLES
+# to set standard_configmake_variables.
+#
+AC_DEFUN([StM_CONFIGMAKE_M4SUGAR_DEFINES],[if true; then
+   AC_REQUIRE([StM_STANDARD_CONFIGMAKE_VARIABLES])
+   dnl  The occurrences of `""' are to stop Autoconf from
+   dnl  complaining that `m4_define' and `dnl' appear in the output.
+   AC_SUBST([__configmake_m4sugardef],
+      ['expr "m""4_define(@<:@$(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"@<:@a-z@:>@\" \"@<:@A-Z@:>@\")$(strip $(3))@:>@,@<:@$($(strip $(2)))@:>@)d""nl" : "\\(.*\\)"'])
+   AC_SUBST([configmake_m4sugar_defines],
+      ['if true; then $(foreach dirvar, $(2), $(call __configmake_m4sugardef, $(1), $(dirvar), $(3));) fi'])
 fi])
