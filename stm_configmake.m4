@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 6
+# serial 7
 
 # StM_STANDARD_CONFIGMAKE_VARIABLES
 # ---------------------------------
@@ -106,7 +106,8 @@ AC_DEFUN([StM_CONFIGMAKE_C_DEFINES],[if true; then
    AC_SUBST([configmake_c_defines_unquoted],
       ['if true; then $(foreach dirvar, $(2), $(call __configmake_unquoted_cdef, $(1), $(dirvar), $(3));) fi'])
   dnl
-  dnl FIXME: The `\012' below assumes ASCII, and will not work for EBCDIC.
+  dnl FIXME: The `\012' below assumes ASCII, as does the
+  dnl        `s/[ 	]10[ 	]*$$//', and these will not work for EBCDIC.
   dnl        One doubts this will be a problem for Sorts Mill software,
   dnl        but it is worth knowing about.
   dnl
@@ -114,7 +115,7 @@ AC_DEFUN([StM_CONFIGMAKE_C_DEFINES],[if true; then
   dnl        http://www.gnu.org/software/autoconf/manual/autoconf.html#Limitations-of-Usual-Tools
   dnl
   AC_SUBST([__configmake_utf8_cdef],
-      ['expr "X\@%:@define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"@<:@a-z@:>@\" \"@<:@A-Z@:>@\")$(strip $(3)) `expr "X$($(strip $(2)))" : "X\\(.*\\)" | $(ICONV) -t UTF-8 | od -tu1 -An | tr "\\012" " " | $(SED) "s/\\([[0123456789]][[0123456789]]*\\)/\\1,/g; s/  */ /g; s/^/{/; s/$$/0 }/"`" : "X\\(.*\\)"'])
+      ['expr "X\@%:@define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"@<:@a-z@:>@\" \"@<:@A-Z@:>@\")$(strip $(3)) `expr "X$($(strip $(2)))" : "X\\(.*\\)" | $(ICONV) -t UTF-8 | od -tu1 -An | tr "\\012" " " | $(SED) "s/[[ 	]]10[[ 	]]*$$//; s/\\([[0123456789]][[0123456789]]*\\)/\\1,/g; s/  */ /g; s/^/{/; s/$$/0 }/"`" : "X\\(.*\\)"'])
    AC_SUBST([configmake_c_defines_utf8],
       ['if true; then $(foreach dirvar, $(2), $(call __configmake_utf8_cdef, $(1), $(dirvar), $(3));) fi'])
 fi])
