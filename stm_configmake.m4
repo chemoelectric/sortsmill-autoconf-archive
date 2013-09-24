@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 7
+# serial 8
 
 # StM_STANDARD_CONFIGMAKE_VARIABLES
 # ---------------------------------
@@ -57,7 +57,8 @@ fi])
 #    #define PREFIX_NUMVAL1_SUFFIX $(numval1)
 #    #define PREFIX_NUMVAL2_SUFFIX $(NUMVAL2)
 #
-# to standard output.
+# to standard output, except embedded double-quotes are
+# escaped. (For now, embedded newlines are not handled.)
 #
 # You can leave out the third (`_SUFFIX') argument.
 #
@@ -91,31 +92,31 @@ AC_DEFUN([StM_CONFIGMAKE_C_DEFINES],[if true; then
    AC_REQUIRE([StM_STANDARD_CONFIGMAKE_VARIABLES])
    AC_REQUIRE([StM_STANDARD_PKGINFO_VARIABLES])
    AC_REQUIRE([AC_PROG_SED])
+   AC_REQUIRE([AC_PROG_AWK])
    AC_REQUIRE([StM_PROG_ICONV])
    if test -z "${ICONV}"; then
       AC_MSG_ERROR([An adequately working `iconv' command is required but was not found.
            Consider installing GNU libiconv.
            GNU libiconv homepage: <http://www.gnu.org/software/libiconv/>])
    fi
+
    AC_SUBST([__configmake_cdef],
-      ['expr "X\@%:@define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"@<:@a-z@:>@\" \"@<:@A-Z@:>@\")$(strip $(3)) \"$($(strip $(2)))\"" : "X\\(.*\\)"'])
+      ['expr "X\@%:@define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"[[a-z]]\" \"[[A-Z]]\")$(strip $(3)) \"$(shell expr "X$(subst ",\\\\\\",$($(strip $(2))))" : "X\\(.*\\)")\"" : "X\\(.*\\)"'])
    AC_SUBST([configmake_c_defines],
       ['if true; then $(foreach dirvar, $(2), $(call __configmake_cdef, $(1), $(dirvar), $(3));) fi'])
+
    AC_SUBST([__configmake_unquoted_cdef],
-      ['expr "X\@%:@define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"@<:@a-z@:>@\" \"@<:@A-Z@:>@\")$(strip $(3)) $($(strip $(2)))" : "X\\(.*\\)"'])
+      ['expr "X\@%:@define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"[[a-z]]\" \"[[A-Z]]\")$(strip $(3)) $($(strip $(2)))" : "X\\(.*\\)"'])
    AC_SUBST([configmake_c_defines_unquoted],
       ['if true; then $(foreach dirvar, $(2), $(call __configmake_unquoted_cdef, $(1), $(dirvar), $(3));) fi'])
-  dnl
-  dnl FIXME: The `\012' below assumes ASCII, as does the
-  dnl        `s/[ 	]10[ 	]*$$//', and these will not work for EBCDIC.
-  dnl        One doubts this will be a problem for Sorts Mill software,
-  dnl        but it is worth knowing about.
-  dnl
-  dnl        See the discussion of `tr' at
-  dnl        http://www.gnu.org/software/autoconf/manual/autoconf.html#Limitations-of-Usual-Tools
-  dnl
-  AC_SUBST([__configmake_utf8_cdef],
-      ['expr "X\@%:@define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"@<:@a-z@:>@\" \"@<:@A-Z@:>@\")$(strip $(3)) `expr "X$($(strip $(2)))" : "X\\(.*\\)" | $(ICONV) -t UTF-8 | od -tu1 -An | tr "\\012" " " | $(SED) "s/[[ 	]]10[[ 	]]*$$//; s/\\([[0123456789]][[0123456789]]*\\)/\\1,/g; s/  */ /g; s/^/{/; s/$$/0 }/"`" : "X\\(.*\\)"'])
+
+   # Use $(__configmake_cdef__q) in place of a single quote.
+   AC_SUBST([__configmake_cdef__q], ["'"])
+
+   # Use Awk as a straightforward way to remove newlines without
+   # worrying about the encoding.
+   AC_SUBST([__configmake_utf8_cdef],
+      ['expr "X\@%:@define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"[[a-z]]\" \"[[A-Z]]\")$(strip $(3)) $(shell expr "X$($(strip $(2)))" : "X\\(.*\\)" | $(ICONV) -t UTF-8 | od -tu1 -An | $(AWK) $(__configmake_cdef__q){printf "%s", @S|@@S|@0}$(__configmake_cdef__q) | $(SED) "s/[[ 	]]10[[ 	]]*$$//; s/\\([[0123456789]][[0123456789]]*\\)/\\1,/g; s/  */ /g; s/^/{/; s/$$/0 }/")" : "X\\(.*\\)"'])
    AC_SUBST([configmake_c_defines_utf8],
       ['if true; then $(foreach dirvar, $(2), $(call __configmake_utf8_cdef, $(1), $(dirvar), $(3));) fi'])
 fi])
@@ -139,7 +140,10 @@ fi])
 #    (define PREFIX_NUMVAL1_SUFFIX $(numval1))
 #    (define PREFIX_NUMVAL2_SUFFIX $(NUMVAL2))
 #
-# to standard output.
+# to standard output, except that the quoted strings actually are
+# translated to UTF-8 encoding, and embedded double-quotes are
+# escaped. (Guile 2.0 respects Emacs-style `-*-coding:utf-8;-*-' and
+# similar notations near the tops of source files.)
 #
 # You can leave out the third (`_SUFFIX') argument.
 #
@@ -149,12 +153,19 @@ fi])
 AC_DEFUN([StM_CONFIGMAKE_SCHEME_DEFINES],[if true; then
    AC_REQUIRE([StM_STANDARD_CONFIGMAKE_VARIABLES])
    AC_REQUIRE([StM_STANDARD_PKGINFO_VARIABLES])
+   AC_REQUIRE([AC_PROG_SED])
+   AC_REQUIRE([StM_PROG_ICONV])
+   if test -z "${ICONV}"; then
+      AC_MSG_ERROR([An adequately working `iconv' command is required but was not found.
+           Consider installing GNU libiconv.
+           GNU libiconv homepage: <http://www.gnu.org/software/libiconv/>])
+   fi
    AC_SUBST([__configmake_schemedef],
-      ['expr "X(define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"@<:@a-z@:>@\" \"@<:@A-Z@:>@\")$(strip $(3)) \"$($(strip $(2)))\")" : "X\\(.*\\)"'])
+     ['expr "X(define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"[[a-z]]\" \"[[A-Z]]\")$(strip $(3)) \"$(shell expr "X$(subst ",\\\\\\",$($(strip $(2))))" : "X\\(.*\\)" | $(ICONV) -t UTF-8)\")" : "X\\(.*\\)"'])
    AC_SUBST([configmake_scheme_defines],
       ['if true; then $(foreach dirvar, $(2), $(call __configmake_schemedef, $(1), $(dirvar), $(3));) fi'])
    AC_SUBST([__configmake_unquoted_schemedef],
-      ['expr "X(define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"@<:@a-z@:>@\" \"@<:@A-Z@:>@\")$(strip $(3)) $($(strip $(2))))" : "X\\(.*\\)"'])
+      ['expr "X(define $(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"[[a-z]]\" \"[[A-Z]]\")$(strip $(3)) $($(strip $(2))))" : "X\\(.*\\)"'])
    AC_SUBST([configmake_scheme_defines_unquoted],
       ['if true; then $(foreach dirvar, $(2), $(call __configmake_unquoted_schemedef, $(1), $(dirvar), $(3));) fi'])
 fi])
@@ -187,7 +198,7 @@ AC_DEFUN([StM_CONFIGMAKE_M4SUGAR_DEFINES],[if true; then
    dnl  The occurrences of `""' are to stop Autoconf from
    dnl  complaining that `m4_define' and `dnl' appear in the output.
    AC_SUBST([__configmake_m4sugardef],
-      ['expr "m""4_define(@<:@$(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"@<:@a-z@:>@\" \"@<:@A-Z@:>@\")$(strip $(3))@:>@,@<:@$($(strip $(2)))@:>@)d""nl" : "\\(.*\\)"'])
+      ['expr "m""4_define([[$(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"[[a-z]]\" \"[[A-Z]]\")$(strip $(3))]],[[$($(strip $(2)))]])d""nl" : "\\(.*\\)"'])
    AC_SUBST([configmake_m4sugar_defines],
       ['if true; then $(foreach dirvar, $(2), $(call __configmake_m4sugardef, $(1), $(dirvar), $(3));) fi'])
 fi])
