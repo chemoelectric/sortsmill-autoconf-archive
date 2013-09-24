@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 5
+# serial 6
 
 # StM_PREFIXED_INSTALL
 # --------------------
@@ -60,12 +60,12 @@ AC_DEFUN([StM_PREFIXED_INSTALL], [if true; then
     $(if $(strip $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))), \
        @if true; then \
           $(foreach d, $(sort $(dir $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3)))), \
-             echo "$(MKDIR_P) '$(DESTDIR)$($(strip $(2))dir)/$(d)'"; \
+             echo " $(MKDIR_P) '$(DESTDIR)$($(strip $(2))dir)/$(d)'"; \
              $(MKDIR_P) '$(DESTDIR)$($(strip $(2))dir)/$(d)';) \
        fi; \
        if true; then \
           $(foreach f, $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3)), \
-             expr "$(INSTALL_$(strip $(3))) '$(call stm__prefixed_install__find,$(strip $(1))/$(f))' '$(DESTDIR)$($(strip $(2))dir)/$(dir $(f))'" : '\(.*\)'; \
+             expr " $(INSTALL_$(strip $(3))) '$(call stm__prefixed_install__find,$(strip $(1))/$(f))' '$(DESTDIR)$($(strip $(2))dir)/$(dir $(f))'" : '\(.*\)'; \
              $(INSTALL_$(strip $(3))) '$(call stm__prefixed_install__find,$(strip $(1))/$(f))' \
                 '$(DESTDIR)$($(strip $(2))dir)/$(dir $(f))' || exit $$$$?;) \
        fi)])"])
@@ -76,7 +76,7 @@ AC_DEFUN([StM_PREFIXED_INSTALL], [if true; then
    ["AS_ESCAPE([uninstall-$(call stm__prefixed_var,$(1),$(2),$(3)): ; \
     $(if $(strip $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))), \
         -@if true; then \
-            $(patsubst %,expr "rm -f '$(DESTDIR)$($(strip $(2))dir)/%'" : '\(.*\)';, \
+            $(patsubst %,expr " rm -f '$(DESTDIR)$($(strip $(2))dir)/%'" : '\(.*\)';, \
               $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))) \
             $(patsubst %,rm -f '$(DESTDIR)$($(strip $(2))dir)/%';, \
               $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))) \
