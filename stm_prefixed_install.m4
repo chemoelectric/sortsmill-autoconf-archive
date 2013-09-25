@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 6
+# serial 7
 
 # StM_PREFIXED_INSTALL
 # --------------------
@@ -50,7 +50,8 @@ AC_DEFUN([StM_PREFIXED_INSTALL], [if true; then
    AC_SUBST([prefixed_install],
       ["AS_ESCAPE([$(eval $$(call stm__prefixed_install,$(1),$(2),$(3)))   \
                    $(eval $$(call stm__prefixed_uninstall,$(1),$(2),$(3))) \
-                   $(eval $$(call stm__prefixed_distribute,$(1),$(2),$(3)))])"])
+                   $(eval $$(call stm__prefixed_distribute,$(1),$(2),$(3))) \
+                   $(eval .PHONY: $(call stm__all_prefixed_vars,$(1),$(2),$(3)))])"])
 
    # FIXME: This is inadequate for libraries, which must be installed
    # with libtool.
@@ -98,6 +99,10 @@ AC_DEFUN([StM_PREFIXED_INSTALL], [if true; then
       ["AS_ESCAPE(prefixed_$(call stm__prefix_to_var,$(1))_dist_$(strip $(2))_$(strip $(3))Z)"])
    AC_SUBST([stm__prefixed_nodist_var],
       ["AS_ESCAPE(prefixed_$(call stm__prefix_to_var,$(1))_nodist_$(strip $(2))_$(strip $(3))Z)"])
+   AC_SUBST([stm__all_prefixed_vars],
+      ["AS_ESCAPE($(call stm__prefixed_var,$(1),$(2),$(3)) \
+                  $(call stm__prefixed_dist_var,$(1),$(2),$(3)) \
+                  $(call stm__prefixed_nodist_var,$(1),$(2),$(3)))"])
    AC_SUBST([stm__expand_all_prefixed_vars],
       ["AS_ESCAPE($($(call stm__prefixed_var,$(1),$(2),$(3))) \
                   $($(call stm__prefixed_dist_var,$(1),$(2),$(3))) \
