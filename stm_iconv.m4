@@ -7,7 +7,15 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# This implementation includes code adapted from absolute-header.m4 of
+# Gnulib, and thus:
+
+# Copyright (C) 2006-2013 Free Software Foundation, Inc.
+# This file is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# serial 3
 
 ##################################
 # Macros for working with iconv  #
@@ -140,3 +148,90 @@ AC_DEFUN([StM_ICONV_OPEN_ENCODING_NAME],[{ :
    AC_LANG_POP
    m4_popdef([cachevar])
 }])
+
+# StM_CHECK_ICONV_IS_GNU
+# ----------------------
+#
+# If the iconv implementation seems to be GNU, without expensive
+# testing, then set the cache variable stm_cv_iconv_is_gnu to `yes';
+# otherwise set the variable to `no'.
+#
+AC_DEFUN([StM_CHECK_ICONV_IS_GNU], [if true; then
+   AC_REQUIRE([AC_PROG_AWK])
+   AC_CHECK_HEADER([iconv.h])
+   AC_CACHE_CHECK([whether iconv is GNU], [stm_cv_iconv_is_gnu], [
+      stm_cv_iconv_is_gnu=no
+      if test x"${ac_cv_header_iconv_h}" = xyes; then
+         _stm__gl_ABSOLUTE_HEADER_ONE([iconv.h])
+
+         # Examine near the top of the header to see if it belongs
+         # to glibc or GNU libiconv. If it does, then we conclude
+         # iconv is GNU. Hopefully this is reliable.
+         ${AWK} 'BEGIN {status=1} \
+                 NR <= 5 && tolower(@S|@0) ~ /this file is part of .*(gnu c library|gnu libiconv)/ {status=0} \
+                 END {exit status}' "${stmgl_cv_absolute_iconv_h}" && stm_cv_iconv_is_gnu=yes
+      fi
+   ])
+fi])
+
+# _stm__gl_ABSOLUTE_HEADER_ONE(HEADER)
+# ------------------------------------
+#
+# Adapted from absolute-header.m4, serial 16, which is part of Gnulib.
+#
+# Like gl_ABSOLUTE_HEADER, except that:
+#   - it assumes that the header exists,
+#   - it uses the current CPPFLAGS,
+#   - it does not cache the result,
+#   - it is silent.
+#
+AC_DEFUN([_stm__gl_ABSOLUTE_HEADER_ONE],
+[
+  AC_REQUIRE([AC_PROG_CPP])
+  AC_REQUIRE([AC_CANONICAL_HOST])
+  AC_LANG_CONFTEST([AC_LANG_SOURCE([[#include <]]m4_dquote([$1])[[>]])])
+  dnl AIX "xlc -E" and "cc -E" omit #line directives for header files
+  dnl that contain only a #include of other header files and no
+  dnl non-comment tokens of their own. This leads to a failure to
+  dnl detect the absolute name of <dirent.h>, <signal.h>, <poll.h>
+  dnl and others. The workaround is to force preservation of comments
+  dnl through option -C. This ensures all necessary #line directives
+  dnl are present. GCC supports option -C as well.
+  case "$host_os" in
+    aix*) stmgl_absname_cpp="${CPP} -C" ;;
+    *)    stmgl_absname_cpp="${CPP}" ;;
+  esac
+changequote(,)
+  case "$host_os" in
+    mingw*)
+      dnl For the sake of native Windows compilers (excluding gcc),
+      dnl treat backslash as a directory separator, like /.
+      dnl Actually, these compilers use a double-backslash as
+      dnl directory separator, inside the
+      dnl   # line "filename"
+      dnl directives.
+      stmgl_dirsep_regex='[/\\]'
+      ;;
+    *)
+      stmgl_dirsep_regex='\/'
+      ;;
+  esac
+  dnl A sed expression that turns a string into a basic regular
+  dnl expression, for use within "/.../".
+  stmgl_make_literal_regex_sed='s,[]$^\\.*/[],\\&,g'
+  stmgl_header_literal_regex=`echo '$1' \
+                           | sed -e "$stmgl_make_literal_regex_sed"`
+  stmgl_absolute_header_sed="/${stmgl_dirsep_regex}${stmgl_header_literal_regex}/"'{
+      s/.*"\(.*'"${stmgl_dirsep_regex}${stmgl_header_literal_regex}"'\)".*/\1/
+      s|^/[^/]|//&|
+      p
+      q
+    }'
+changequote([,])
+  dnl eval is necessary to expand stmgl_absname_cpp.
+  dnl Ultrix and Pyramid sh refuse to redirect output of eval,
+  dnl so use subshell.
+  AS_VAR_SET([stmgl_cv_absolute_]AS_TR_SH([[$1]]),
+[`(eval "$stmgl_absname_cpp conftest.$ac_ext") 2>&AS_MESSAGE_LOG_FD |
+  sed -n "$stmgl_absolute_header_sed"`])
+])
