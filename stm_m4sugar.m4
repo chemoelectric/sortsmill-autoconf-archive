@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 4
+# serial 5
 
 # StM_M4SUGAR
 # -----------
@@ -64,5 +64,5 @@ EOF
    AC_SUBST([AM_V_M4SUGAR_0],["AS_ESCAPE([@echo "  M4SUGAR " $(@);])"])
 
    AC_SUBST([m4sugar_rule],
-      ["AS_ESCAPE([$(1); $$(AM_V_M4SUGAR)(set -e; $$(MKDIR_P) $$(@D); $$(TRANSLATE_M4SUGAR) < $$(<) > $$(@)-tmp; mv $$(@)-tmp $$(@))])"])
+      ["AS_ESCAPE([$(strip $(1)); $$(AM_V_M4SUGAR)(set -e; $$(MKDIR_P) $$(@D); $$(TRANSLATE_M4SUGAR) < $$(<) > $$(@)-tmp; mv $$(@)-tmp $$(@))])"])
 fi])
