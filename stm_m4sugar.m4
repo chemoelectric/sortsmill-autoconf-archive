@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 3
+# serial 4
 
 # StM_M4SUGAR
 # -----------
@@ -23,7 +23,7 @@
 #
 # Creates a GNU Make macro called `m4sugar_rule', where for instance
 # 
-#    $(call m4sugar_rule, %.c, %.c.m4)
+#    $(call m4sugar_rule, %.c: %.c.m4)
 #
 # expands to the equivalent of
 #
@@ -34,7 +34,8 @@
 # `quadrigraph-tool', putting it in $(top_builddir). Be sure to add it
 # to DISTCLEANFILES.
 #
-AC_DEFUN([StM_M4SUGAR],[{ :
+AC_DEFUN([StM_M4SUGAR],[if true; then
+   AC_REQUIRE([AC_PROG_MKDIR_P])
    AC_REQUIRE([AC_PROG_SED])
    AC_REQUIRE([StM_PROG_GNU_M4])
 
@@ -53,15 +54,15 @@ EOF
 ])
 
    AC_SUBST([TRANSLATE_M4SUGAR_QUADRIGRAPHS],
-            ['$(SED) -f $(top_builddir)/quadrigraph-tool'])
+      ["AS_ESCAPE([$(SED) -f $(top_builddir)/quadrigraph-tool])"])
 
    AC_SUBST([TRANSLATE_M4SUGAR],
-            ['($(GNU_M4) $(M4SUGAR_FLAGS) | $(TRANSLATE_M4SUGAR_QUADRIGRAPHS))'])
+      ["AS_ESCAPE([($(GNU_M4) $(M4SUGAR_FLAGS) | $(TRANSLATE_M4SUGAR_QUADRIGRAPHS))])"])
 
-   AC_SUBST([AM_V_M4SUGAR],['$(AM_V_M4SUGAR_$(V))'])
-   AC_SUBST([AM_V_M4SUGAR_],['$(AM_V_M4SUGAR_$(AM_DEFAULT_VERBOSITY))'])
-   AC_SUBST([AM_V_M4SUGAR_0],['@echo "  M4SUGAR " @S|@@;'])
+   AC_SUBST([AM_V_M4SUGAR],["AS_ESCAPE([$(AM_V_M4SUGAR_$(V))])"])
+   AC_SUBST([AM_V_M4SUGAR_],["AS_ESCAPE([$(AM_V_M4SUGAR_$(AM_DEFAULT_VERBOSITY))])"])
+   AC_SUBST([AM_V_M4SUGAR_0],["AS_ESCAPE([@echo "  M4SUGAR " $(@);])"])
 
    AC_SUBST([m4sugar_rule],
-      ["\@S|@(1): \@S|@(2); \@S|@\@S|@(AM_V_M4SUGAR)\@S|@\@S|@(TRANSLATE_M4SUGAR) < '\@S|@\@S|@<' > '\@S|@\@S|@@-tmp'; mv '\@S|@\@S|@@-tmp' '\@S|@\@S|@@'"])
-}])
+      ["AS_ESCAPE([$(1); $$(AM_V_M4SUGAR)(set -e; $$(MKDIR_P) $$(@D); $$(TRANSLATE_M4SUGAR) < $$(<) > $$(@)-tmp; mv $$(@)-tmp $$(@))])"])
+fi])
