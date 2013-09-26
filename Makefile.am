@@ -30,6 +30,7 @@ dist_aclocal_DATA += stm_check_locales.m4
 dist_aclocal_DATA += stm_check_ltdlopen_lib.m4
 dist_aclocal_DATA += stm_compiler_flags.m4
 dist_aclocal_DATA += stm_configmake.m4
+dist_aclocal_DATA += stm_configmake_rules.m4
 dist_aclocal_DATA += stm_config_makefiles.m4
 dist_aclocal_DATA += stm_constant.m4
 dist_aclocal_DATA += stm_define_attr_visible.m4
