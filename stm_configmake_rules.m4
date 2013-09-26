@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 1
+# serial 2
 
 AC_DEFUN([stm__configmake_rule],
    [m4_if([$1], [scm],
@@ -54,7 +54,7 @@ AC_DEFUN([StM_CONFIGMAKE_RULES], [if true; then
          { \ 
            echo 'd''nl  \$(2)'; \ 
            echo 'd''nl'; \ 
-           \$(if \$(strip \$(4)),\$(call configmake_m4sugar_defines, \$(3), \$(4));) \ 
+           \$(if \$(strip \$(4)),\$(call configmake_m4sugar_defines, \$(3), \$(4) \$(5));) \ 
          } > \$\$(@)-tmp; \ 
          mv \$\$(@)-tmp \$\$(@) )"])
 
