@@ -7,21 +7,31 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 AC_DEFUN([stm__configmake_rule],
-   [m4_if([$1], [scm],
-          ["\$(call configmake_[$1]_rule,\$(1),\$(2),[$2],\$(3),\$(4),\$(5))"],
-          ["\$(call configmake_[$1]_rule,\$(1),[$2],\$(2),\$(3),\$(4))"])])
+   [m4_ifblank([$3],
+      [m4_if([$1], [scm],
+         ["\$(call configmake_[$1]_rule,\$(1),\$(2),[$2],\$(3),\$(4),\$(5))"],
+         ["\$(call configmake_[$1]_rule,\$(1),[$2],\$(2),\$(3),\$(4))"])],
+      [m4_if([$1], [scm],
+         ["\$(if \$(strip \$([$3])),\$(call configmake_[$1]_rule,\$(1),\$(2),[$2],\$(3),[$3] \$(4),\$(5)),\$(call configmake_[$1]_rule,\$(1),\$(2),[$2],\$(3),\$(4),\$(5)))"],
+         ["\$(if \$(strip \$([$3])),\$(call configmake_[$1]_rule,\$(1),[$2],\$(2),[$3] \$(3),\$(4)),\$(call configmake_[$1]_rule,\$(1),[$2],\$(2),\$(3),\$(4)))"])])])
 
 AC_DEFUN([stm__pkginfo_configmake_rule],
-   [stm__configmake_rule([$1], m4_escape(AS_ESCAPE([Package information for $(PACKAGE_NAME).])))])
+   [stm__configmake_rule([$1],
+                         m4_escape(AS_ESCAPE([Package information for $(PACKAGE_NAME).])),
+                         [PKGINFO_LIST])])
 
 AC_DEFUN([stm__dirlayout_configmake_rule],
-   [stm__configmake_rule([$1], m4_escape(AS_ESCAPE([Directory layout of $(PACKAGE_NAME).])))])
+   [stm__configmake_rule([$1],
+                         m4_escape(AS_ESCAPE([Directory layout of $(PACKAGE_NAME).])),
+                         [DIRLAYOUT_LIST])])
 
 AC_DEFUN([stm__confopts_configmake_rule],
-   [stm__configmake_rule([$1], m4_escape(AS_ESCAPE([Configuration options that were chosen for $(PACKAGE_NAME).])))])
+   [stm__configmake_rule([$1],
+                         m4_escape(AS_ESCAPE([Configuration options that were chosen for $(PACKAGE_NAME).])),
+                         [CONFOPTS_LIST])])
 
 # StM_CONFIGMAKE_RULES
 # --------------------
@@ -88,5 +98,13 @@ AC_DEFUN([StM_CONFIGMAKE_RULES], [if true; then
    AC_SUBST([confopts_h_rule], [stm__confopts_configmake_rule([h])])
    AC_SUBST([confopts_m4_rule], [stm__confopts_configmake_rule([m4])])
    AC_SUBST([confopts_scm_rule], [stm__confopts_configmake_rule([scm])])
+
+   AC_SUBST([configmake_vars_list],
+      ["AS_ESCAPE([$(strip $(join $(patsubst %,@<:@@<:@%@:>@$(stm__configmake_comma),$(2)),$(patsubst %,@<:@$(strip $(1))%$(strip $(3))@:>@@:>@,$(shell echo $(2) | LC_ALL=C tr '[[a-z]]' '[[A-Z]]'))))])"])
+
+   dnl  FIXME: We could benefit from an Autoconf module
+   dnl         to define useful constructs of this kind.
+   dnl         WRITE IT! But be careful what we put in it.
+   AC_SUBST([stm__configmake_comma], [","])
 
 fi])
