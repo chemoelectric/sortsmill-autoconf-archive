@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 8
+# serial 9
 
 # StM_STANDARD_CONFIGMAKE_VARIABLES
 # ---------------------------------
@@ -170,6 +170,48 @@ AC_DEFUN([StM_CONFIGMAKE_SCHEME_DEFINES],[if true; then
       ['if true; then $(foreach dirvar, $(2), $(call __configmake_unquoted_schemedef, $(1), $(dirvar), $(3));) fi'])
 fi])
 
+# StM_CONFIGMAKE_M4_DEFINES(make_variable_name, [define_macro=`define'], [left_quote=`], [right_quote='])
+# -------------------------------------------------------------------------------------------------------
+#
+# Defines a GNU Make macro (variable) with the given name.
+#
+# An example:
+#
+#    $(call the_name_I_gave_it, PREFIX_, bindir libdir PACKAGE, _SUFFIX)
+#
+# results in shell code to send
+#
+#    define(`PREFIX_BINDIR_SUFFIX',`$(bindir)')dnl
+#    define(`PREFIX_LIBDIR_SUFFIX',`$(libdir)')dnl
+#    define(`PREFIX_PACKAGE_SUFFIX',`$(PACKAGE)')dnl
+#
+# to standard output.
+#
+# You can leave out the third (`_SUFFIX') argument.
+#
+# As a convenience, this macro calls StM_STANDARD_CONFIGMAKE_VARIABLES
+# and StM_STANDARD_PKGINFO_VARIABLES.
+#
+AC_DEFUN([StM_CONFIGMAKE_M4_DEFINES],[if true; then
+   AC_REQUIRE([StM_STANDARD_CONFIGMAKE_VARIABLES])
+   AC_REQUIRE([StM_STANDARD_PKGINFO_VARIABLES])
+
+   m4_pushdef([my_define], m4_ifblank([$2], [define], [$2]))
+   m4_pushdef([my_lquote], m4_ifblank([$3], [`], [$3]))
+   m4_pushdef([my_rquote], m4_ifblank([$4], ['], [$4]))
+   
+   dnl  The `d""nl' stops Autoconf from complaining that
+   dnl  `dnl' appears in the output.
+   AC_SUBST([__configmake_m4def__$1],
+      ['expr "my_define[](my_lquote[$(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"[[a-z]]\" \"[[A-Z]]\")$(strip $(3))]my_rquote,my_lquote[$($(strip $(2)))]my_rquote)d""nl" : "\\(.*\\)"'])
+   AC_SUBST([$1],
+      ['if true; then $(foreach dirvar, $(2), $(call __configmake_m4def__$1, $(1), $(dirvar), $(3));) fi'])
+
+   m4_popdef([my_define])
+   m4_popdef([my_lquote])
+   m4_popdef([my_rquote])
+fi])
+
 # StM_CONFIGMAKE_M4SUGAR_DEFINES
 # ------------------------------
 #
@@ -181,11 +223,18 @@ fi])
 #
 # results in shell code to send
 #
-#    m4_define([PREFIX_BINDIR_SUFFIX],[$(bindir)])dnl
-#    m4_define([PREFIX_LIBDIR_SUFFIX],[$(libdir)])dnl
-#    m4_define([PREFIX_PACKAGE_SUFFIX],[$(PACKAGE)])dnl
+#    m4_ifndef([__M4_DEFINE__],[m4_define([__M4_DEFINE__],m4_defn([m4_define]))])dnl
+#    __M4_DEFINE__([PREFIX_BINDIR_SUFFIX],[$(bindir)])dnl
+#    __M4_DEFINE__([PREFIX_LIBDIR_SUFFIX],[$(libdir)])dnl
+#    __M4_DEFINE__([PREFIX_PACKAGE_SUFFIX],[$(PACKAGE)])dnl
 #
-# to standard output.
+# to standard output. Thus you can put something like
+#
+#    m4_define([__M4_DEFINE__], [m4_defn([AC_DEFUN])])
+#
+# early on, to use AC_DEFUN, or some other macro, instead of
+# m4_define. You could also use m4_pushdef and m4_popdef, instead of
+# m4_define.
 #
 # You can leave out the third (`_SUFFIX') argument.
 #
@@ -193,14 +242,12 @@ fi])
 # and StM_STANDARD_PKGINFO_VARIABLES.
 #
 AC_DEFUN([StM_CONFIGMAKE_M4SUGAR_DEFINES],[if true; then
-   AC_REQUIRE([StM_STANDARD_CONFIGMAKE_VARIABLES])
-   AC_REQUIRE([StM_STANDARD_PKGINFO_VARIABLES])
-   dnl  The occurrences of `""' are to stop Autoconf from
-   dnl  complaining that `m4_define' and `dnl' appear in the output.
-   AC_SUBST([__configmake_m4sugardef],
-      ['expr "m""4_define([[$(strip $(1))$(shell echo $(strip $(2)) | LC_ALL=C tr \"[[a-z]]\" \"[[A-Z]]\")$(strip $(3))]],[[$($(strip $(2)))]])d""nl" : "\\(.*\\)"'])
-   AC_SUBST([configmake_m4sugar_defines],
-      ['if true; then $(foreach dirvar, $(2), $(call __configmake_m4sugardef, $(1), $(dirvar), $(3));) fi'])
+   m4_pushdef([my_define], m4_ifblank([$2], [__M4_DEFINE__], [$2]))
+   StM_CONFIGMAKE_M4_DEFINES([configmake_m4sugar_defines], my_define, [@<:@], [@:>@])
+   dnl  The occurences of '' are to stop Autoconf from confusing
+   dnl  the echoed text with stray m4sugar macros.
+   [configmake_m4sugar_defines="echo 'm''4_ifndef([__M4_DEFINE__],[m''4_define([__M4_DEFINE__],m''4_defn([m''4_define]))])d''nl';${configmake_m4sugar_defines}"]
+   m4_popdef([my_define])
 fi])
 
 # StM_CONFIGMAKE_DEFINES
