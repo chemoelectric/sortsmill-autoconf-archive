@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 3
+# serial 4
 
 AC_DEFUN([stm__configmake_rule],
    [m4_ifblank([$3],
@@ -45,46 +45,49 @@ AC_DEFUN([StM_CONFIGMAKE_RULES], [if true; then
    AC_REQUIRE([StM_CONFIGMAKE_DEFINES])
 
    AC_SUBST([configmake_h_rule],
-      ["\$(strip \$(1)): ; \ 
-          \$\$(AM_V_GEN)( set -e; \ 
-            \$\$(MKDIR_P) \$\$(@D); \ 
-            { \ 
-              echo '/* \$(2) */'; \ 
-              echo; \ 
-              \$(if \$(strip \$(4)),\$(call configmake_c_defines, \$(3), \$(4));) \ 
-              \$(if \$(strip \$(4)),\$(call configmake_c_defines_utf8, \$(3), \$(4), _IN_UTF8);) \ 
-              \$(if \$(strip \$(5)),\$(call configmake_c_defines_unquoted, \$(3), \$(5));) \ 
-            } > \$\$(@)-tmp; \ 
+      ["\$(strip \$(1)): ; \
+          \$\$(AM_V_GEN)( set -e; \
+            \$\$(MKDIR_P) \$\$(@D); \
+            { \
+              echo '/* \$(2) */'; \
+              echo; \
+              \$(if \$(strip \$(4)\$(5)),:,echo '/* This header file has nothing in it. */'); \
+              \$(if \$(strip \$(4)),\$(call configmake_c_defines, \$(3), \$(4));) \
+              \$(if \$(strip \$(4)),\$(call configmake_c_defines_utf8, \$(3), \$(4), _IN_UTF8);) \
+              \$(if \$(strip \$(5)),\$(call configmake_c_defines_unquoted, \$(3), \$(5));) \
+            } > \$\$(@)-tmp; \
             mv \$\$(@)-tmp \$\$(@) )"])
 
    AC_SUBST([configmake_m4_rule],
-      ["\$(strip \$(1)): ; \ 
-       \$\$(AM_V_GEN)( set -e; \ 
-         \$\$(MKDIR_P) \$\$(@D); \ 
-         { \ 
-           echo 'd''nl  \$(2)'; \ 
-           echo 'd''nl'; \ 
-           \$(if \$(strip \$(4)),\$(call configmake_m4sugar_defines, \$(3), \$(4) \$(5));) \ 
-         } > \$\$(@)-tmp; \ 
+      ["\$(strip \$(1)): ; \
+       \$\$(AM_V_GEN)( set -e; \
+         \$\$(MKDIR_P) \$\$(@D); \
+         { \
+           echo 'd''nl  \$(2)'; \
+           echo 'd''nl'; \
+           \$(if \$(strip \$(4)\$(5)),:,echo 'd''nl  This m4 file has nothing in it.'); \
+           \$(if \$(strip \$(4)\$(5)),\$(call configmake_m4sugar_defines, \$(3), \$(4) \$(5));) \
+         } > \$\$(@)-tmp; \
          mv \$\$(@)-tmp \$\$(@) )"])
 
    AC_SUBST([configmake_scm_rule],
-      ["\$(strip \$(1)): ; \ 
-          \$\$(AM_V_GEN)( set -e; \ 
-            \$\$(MKDIR_P) \$\$(@D); \ 
-            { \ 
-              echo ';; \$(3)  -*- coding: utf-8 -*-'; \ 
-              echo; \ 
+      ["\$(strip \$(1)): ; \
+          \$\$(AM_V_GEN)( set -e; \
+            \$\$(MKDIR_P) \$\$(@D); \
+            { \
+              echo ';; \$(3)  -*- coding: utf-8 -*-'; \
+              echo; \
 		      echo '(library (\$(strip \$(2)))'; \
               echo; \
         	  echo '(export \$\$(addprefix \$(4),\$\$(strip \$(shell echo \$(5) \$(6) | LC_ALL=C tr \"[[a-z]]\" \"[[A-Z]]\"))))'; \
               echo; \
               echo '(import (rnrs base))'; \
               echo; \
-              \$(if \$(strip \$(5)),\$(call configmake_scheme_defines, \$(4), \$(5));) \ 
-              \$(if \$(strip \$(6)),\$(call configmake_scheme_defines_unquoted, \$(4), \$(6));) \ 
+              \$(if \$(strip \$(5)\$(6)),:,echo ';;;';echo ';;; This library has nothing in it.';echo ';;;';echo); \
+              \$(if \$(strip \$(5)),\$(call configmake_scheme_defines, \$(4), \$(5));) \
+              \$(if \$(strip \$(6)),\$(call configmake_scheme_defines_unquoted, \$(4), \$(6));) \
               echo ')'; \
-            } > \$\$(@)-tmp; \ 
+            } > \$\$(@)-tmp; \
             mv \$\$(@)-tmp \$\$(@) )"])
 
    AC_SUBST([pkginfo_h_rule], [stm__pkginfo_configmake_rule([h])])
