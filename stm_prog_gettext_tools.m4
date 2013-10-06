@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 # StM_PROG_XGETTEXT, StM_PROG_MSGMERGE, etc.
 # ------------------------------------------
@@ -26,7 +26,7 @@ AC_DEFUN([_stm_gettext_tools_prog],[{ :
    StM_PATH_PROGS_CACHED_AND_PRECIOUS(_TOOL,[GNU ]_tool[ command],
       [$1],[
          if LC_ALL=C LANG=C ${ac_path_]_TOOL[} --version | \
-                 LC_ALL=C LANG=C ${GREP} '(GNU gettext-tools)' 2> /dev/null > /dev/null; then
+                 LC_ALL=C LANG=C ${GREP} '(GNU .*gettext.*)' 2> /dev/null > /dev/null; then
             ac_cv_path_]_TOOL[=${ac_path_]_TOOL[}
             ac_path_]_TOOL[_found=:
          fi
