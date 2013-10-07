@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 5
+# serial 6
 
 # StM_MSGFMT_RULE(gnu_make_macro_name)
 # ------------------------------------
@@ -124,14 +124,11 @@ AC_DEFUN([StM_XGETTEXT_RULE],[if true; then
 		\@S|@\@S|@(SED) -e '/^\"POT-Creation-Date:/{d;q}' '\@S|@\@S|@@' > '\@S|@\@S|@(notdir \@S|@\@S|@@)-datelesstmp' && \
 		\@S|@\@S|@(SED) -e '/^\"POT-Creation-Date:/{d;q}' '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp' > '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp-datelesstmp' && \
 		if cmp '\@S|@\@S|@(notdir \@S|@\@S|@@)-datelesstmp' '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp-datelesstmp' 2> /dev/null > /dev/null; then \
-			(echo \"*** Strings unchanged: touch '\@S|@\@S|@@'\" || :) && \
 			touch '\@S|@\@S|@@'; \
 		else \
-			(echo \"*** Strings changed: '\@S|@\@S|@@'\" || :) && \
 			mv '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp' '\@S|@\@S|@@'; \
 		fi; \
 	else \
-		(echo \"*** Creating POT file: '\@S|@\@S|@@'\" || :) && \
 		mv '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp' '\@S|@\@S|@@'; \
 	fi; \
 	rm -f '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp' '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp-datelesstmp' '\@S|@\@S|@(notdir \@S|@\@S|@@)-datelesstmp'"]))
