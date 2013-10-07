@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 4
+# serial 5
 
 # StM_MSGFMT_RULE(gnu_make_macro_name)
 # ------------------------------------
@@ -27,7 +27,7 @@
 #       mkdir -p en_US/LC_MESSAGES/
 #       msgfmt --check -o en_US/LC_MESSAGES/mydomain.mo $(srcdir)/en_US.po
 #
-AC_DEFUN([StM_MSGFMT_RULE],[{ :
+AC_DEFUN([StM_MSGFMT_RULE],[if true; then
    AC_REQUIRE([StM_PROG_MSGFMT])
    AC_REQUIRE([AC_PROG_MKDIR_P])
 
@@ -38,8 +38,8 @@ AC_DEFUN([StM_MSGFMT_RULE],[{ :
    fi
 
    AC_SUBST([$1],
-      ["\@S|@(strip \@S|@1); \@S|@\@S|@(MKDIR_P) '\@S|@\@S|@(dir \@S|@\@S|@@)' && \@S|@\@S|@(MSGFMT) \@S|@2 -o '\@S|@\@S|@@' '\@S|@\@S|@<'"])
-}])
+      ["\@S|@(strip \@S|@1); \@S|@\@S|@(AM_V_GEN)\@S|@\@S|@(MKDIR_P) '\@S|@\@S|@(dir \@S|@\@S|@@)' && \@S|@\@S|@(MSGFMT) \@S|@2 -o '\@S|@\@S|@@' '\@S|@\@S|@<'"])
+fi])
 
 # StM_MSGMERGE_RULE(gnu_make_macro_name)
 # --------------------------------------
@@ -59,7 +59,7 @@ AC_DEFUN([StM_MSGFMT_RULE],[{ :
 #       msgmerge --backup=numbered --update --force-po $(srcdir)/en_US.po $(srcdir)/mydomain.pot
 #       touch $(srcdir)/en_US.po
 #
-AC_DEFUN([StM_MSGMERGE_RULE],[{ :
+AC_DEFUN([StM_MSGMERGE_RULE],[if true; then
    AC_REQUIRE([StM_PROG_MSGMERGE])
 
    if test -z "${MSGMERGE}"; then
@@ -69,8 +69,8 @@ AC_DEFUN([StM_MSGMERGE_RULE],[{ :
    fi
 
    AC_SUBST([$1],
-      ["\@S|@(strip \@S|@1); \@S|@\@S|@(MSGMERGE) \@S|@2 --update --force-po '\@S|@\@S|@@' '\@S|@\@S|@<' && touch '\@S|@\@S|@@'"])
-}])
+      ["\@S|@(strip \@S|@1); \@S|@\@S|@(AM_V_GEN)\@S|@\@S|@(MSGMERGE) \@S|@2 --update --force-po '\@S|@\@S|@@' '\@S|@\@S|@<' && touch '\@S|@\@S|@@'"])
+fi])
 
 # StM_XGETTEXT_RULE(gnu_make_macro_name)
 # --------------------------------------
@@ -104,7 +104,7 @@ AC_DEFUN([StM_MSGMERGE_RULE],[{ :
 # The effect is to merely touch the POT file if it exists and would
 # not change except for POT-Creation-Date; otherwise create it anew.
 #
-AC_DEFUN([StM_XGETTEXT_RULE],[{ :
+AC_DEFUN([StM_XGETTEXT_RULE],[if true; then
    AC_REQUIRE([StM_PROG_XGETTEXT])
 
    if test -z "${XGETTEXT}"; then
@@ -119,8 +119,7 @@ AC_DEFUN([StM_XGETTEXT_RULE],[{ :
    AC_SUBST([$1],
       m4_flatten(["\
 \@S|@(strip \@S|@1); \
-	@(echo \"Running \@S|@\@S|@(XGETTEXT) -o \@S|@\@S|@(notdir \@S|@\@S|@@)-tmp \@S|@2 --force-po \@S|@\@S|@^)\" || :) && \
-	\@S|@\@S|@(XGETTEXT) -o \@S|@\@S|@(notdir \@S|@\@S|@@)-tmp \@S|@2 --force-po \@S|@\@S|@^ && \
+	@\@S|@\@S|@(AM_V_GEN)\@S|@\@S|@(XGETTEXT) -o \@S|@\@S|@(notdir \@S|@\@S|@@)-tmp \@S|@2 --force-po \@S|@\@S|@^ && \
 	if test -f '\@S|@\@S|@@'; then \
 		\@S|@\@S|@(SED) -e '/^\"POT-Creation-Date:/{d;q}' '\@S|@\@S|@@' > '\@S|@\@S|@(notdir \@S|@\@S|@@)-datelesstmp' && \
 		\@S|@\@S|@(SED) -e '/^\"POT-Creation-Date:/{d;q}' '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp' > '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp-datelesstmp' && \
@@ -128,12 +127,12 @@ AC_DEFUN([StM_XGETTEXT_RULE],[{ :
 			(echo \"*** Strings unchanged: touch '\@S|@\@S|@@'\" || :) && \
 			touch '\@S|@\@S|@@'; \
 		else \
-			(echo \"*** Strings changed: mv '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp' '\@S|@\@S|@@'\" || :) && \
+			(echo \"*** Strings changed: '\@S|@\@S|@@'\" || :) && \
 			mv '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp' '\@S|@\@S|@@'; \
 		fi; \
 	else \
-		(echo \"*** Creating POT file: mv '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp' '\@S|@\@S|@@'\" || :) && \
+		(echo \"*** Creating POT file: '\@S|@\@S|@@'\" || :) && \
 		mv '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp' '\@S|@\@S|@@'; \
 	fi; \
 	rm -f '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp' '\@S|@\@S|@(notdir \@S|@\@S|@@)-tmp-datelesstmp' '\@S|@\@S|@(notdir \@S|@\@S|@@)-datelesstmp'"]))
-}])
+fi])
