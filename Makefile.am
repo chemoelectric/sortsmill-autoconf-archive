@@ -38,6 +38,7 @@ dist_aclocal_DATA += stm_floating_point_constant.m4
 dist_aclocal_DATA += stm_gettext_tools_rules.m4
 dist_aclocal_DATA += stm_iconv.m4
 dist_aclocal_DATA += stm_indent_pro_links.m4
+dist_aclocal_DATA += stm_library_mk.m4
 dist_aclocal_DATA += stm_ln_man_to_man.m4
 dist_aclocal_DATA += stm_m4sugar.m4
 dist_aclocal_DATA += stm_make_readme.m4
