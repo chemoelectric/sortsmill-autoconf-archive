@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 6
+# serial 7
 
 # StM_MSGFMT_RULE(gnu_make_macro_name)
 # ------------------------------------
@@ -30,6 +30,8 @@
 AC_DEFUN([StM_MSGFMT_RULE],[if true; then
    AC_REQUIRE([StM_PROG_MSGFMT])
    AC_REQUIRE([AC_PROG_MKDIR_P])
+
+   m4_pattern_allow([AM_V_GEN])
 
    if test -z "${MSGFMT}"; then
       AC_MSG_ERROR([msgfmt from GNU gettext is required.
@@ -61,6 +63,8 @@ fi])
 #
 AC_DEFUN([StM_MSGMERGE_RULE],[if true; then
    AC_REQUIRE([StM_PROG_MSGMERGE])
+
+   m4_pattern_allow([AM_V_GEN])
 
    if test -z "${MSGMERGE}"; then
       AC_MSG_ERROR([msgmerge from GNU gettext is required.
@@ -106,6 +110,8 @@ fi])
 #
 AC_DEFUN([StM_XGETTEXT_RULE],[if true; then
    AC_REQUIRE([StM_PROG_XGETTEXT])
+
+   m4_pattern_allow([AM_V_GEN])
 
    if test -z "${XGETTEXT}"; then
       AC_MSG_ERROR([xgettext from GNU gettext is required.
