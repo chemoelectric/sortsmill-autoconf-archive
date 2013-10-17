@@ -1,6 +1,6 @@
 # -*- mode: makefile-gmake; coding: utf-8 -*-
 #
-# serial 3
+# serial 4
 #
 m4_define([_StM_LIBRARY_MK_COPYRIGHT],
 [# -*- mode: makefile-gmake; coding: utf-8 -*-
@@ -248,7 +248,7 @@ __configmake_m4sugardef = printf "__M4_DEFINE__(@<:@%s@:>@,@<:@%s@:>@)d""nl\n" "
 #"
 
 # FIXME: Document this.
-configmake-vars-list = @<:@$(strip $(join $(patsubst %,@<:@@<:@%@:>@$(shell printf ","),$(2)),$(patsubst %,@<:@$(strip $(1))%$(strip $(3))@:>@@:>@,$(shell echo $(2) | LC_ALL=C tr '@<:@a-z@:>@' '@<:@A-Z@:>@'))))@:>@
+configmake-vars-list = $(strip $(join $(patsubst %,@<:@@<:@%@:>@$(shell printf ","),$(2)),$(patsubst %,@<:@$(strip $(1))%$(strip $(3))@:>@@:>@,$(shell echo $(2) | LC_ALL=C tr '@<:@a-z@:>@' '@<:@A-Z@:>@'))))
 
 # FIXME: Document this.
 define __configmake_rule_template =
