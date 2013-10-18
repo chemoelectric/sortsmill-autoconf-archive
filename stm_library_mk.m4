@@ -1,6 +1,6 @@
 # -*- mode: makefile-gmake; coding: utf-8 -*-
 #
-# serial 5
+# serial 6
 #
 m4_define([_StM_LIBRARY_MK_COPYRIGHT],
 [# -*- mode: makefile-gmake; coding: utf-8 -*-
@@ -71,6 +71,56 @@ apply-in-bunches = $(if $(strip $(call take, $(2), $(3))), \
 # $(call apply-in-bunches, remove, 25, $(files)) will remove files in
 # bunches of 25.
 remove = rm -f $(1);
+
+#--------------------------------------------------------------------------
+#
+# Extraction of that parts of Make rules.
+#
+# FIXME: The following definitions likely will not do what is wanted
+# if the ‘recipe’ part is present and contains quotations.
+
+# Examples:
+#
+#    $(call rule-targets, a b c : d e | f g; recipe)
+#
+#    $(call rule-targets, a b c :: d e | f g; recipe)
+#
+# both will return ‘a b c’.
+#
+rule-targets = $(strip $(shell printf '%s' "$(1)" | \
+	$(or $(SED),sed) 's/^\(@<:@^:@:>@@<:@^:@:>@*\)\(\|:\):.*/\1/'))
+
+# Examples:
+#
+#    $(call rule-prerequisites, a b c : d e | f g; recipe)
+#
+#    $(call rule-prerequisites, a b c :: d e | f g; recipe)
+#
+# both will return ‘d e’.
+#
+rule-prerequisites = $(strip $(shell printf '%s' "$(1)" | \
+	$(or $(SED),sed) 's/^@<:@^:@:>@@<:@^:@:>@*\(\|:\):\(@<:@^|;@:>@*\).*/\2/'))
+
+# Examples:
+#
+#    $(call rule-order-only-prerequisites, a b c : d e | f g; recipe)
+#
+#    $(call rule-order-only-prerequisites, a b c :: d e | f g; recipe)
+#
+# both will return ‘f g’.
+#
+rule-order-only-prerequisites = $(strip $(shell printf '%s' "$(1)" | \
+	$(or $(SED),sed) 's/^@<:@^:@:>@@<:@^:@:>@*\(\|:\):@<:@^|@:>@*\(\||\)\(@<:@^;@:>@*\).*/\3/'))
+
+# Examples:
+#
+#    $(call rule-recipe, a b c : d e | f g; recipe)
+#
+#    $(call rule-recipe, a b c :: d e | f g; recipe)
+#
+# both will return ‘ recipe’.
+#
+rule-recipe = $(shell printf '%s' "$(1)" | $(or $(SED),sed) 's/^@<:@^;@:>@*\(;\|\)\(.*\)/\2/')
 
 #--------------------------------------------------------------------------
 #
