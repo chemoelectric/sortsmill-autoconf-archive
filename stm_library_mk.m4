@@ -16,6 +16,9 @@ AC_DEFUN([StM_LIBRARY_MK], [if :; then
 AC_REQUIRE([AC_PROG_MKDIR_P])
 AC_REQUIRE([AC_PROG_SED])
 AC_REQUIRE([StM_PROG_ICONV])
+AC_REQUIRE([StM_PROG_MSGFMT])
+AC_REQUIRE([StM_PROG_MSGMERGE])
+AC_REQUIRE([StM_PROG_XGETTEXT])
 m4_changecom()
 AC_CONFIG_COMMANDS([library.mk],
 [cat > library.mk <<_____StM_EOF_EOF_EOF_EOF_EOF_EOF_____
@@ -248,10 +251,23 @@ $(strip $(1))-in-$(strip $(2)):
 endef
 
 #--------------------------------------------------------------------------
-
-# Silent rules commands.
 #
-# Examples:
+# Silent rules macros.
+
+# $(call if-silent,...do-this-if-silent...[,...do-this-if-not-silent])
+#
+# $(call if-not-silent,...do-this-if-not-silent...[,...do-this-if-silent])
+#
+# DEFAULT_VERBOSITY (or, if that is not set, AM_DEFAULT_VERBOSITY)
+# should be set to 0, if you want ‘silent’ by default.
+#
+# Setting V=0 or V=1 on the command line works as with silent rules in
+# Automake.
+#
+if-silent = $(if $(filter 0,$(or $(V),$(if $(filter-out $(flavor DEFAULT_VERBOSITY),undefined),$(DEFAULT_VERBOSITY),$(AM_DEFAULT_VERBOSITY)))),$(1),$(2))
+if-not-silent = $(call if-silent,$(2),$(1))
+
+# $(call v,...) examples:
 #
 #    generated-file: prereq
 #       $(call v, GEN) generate $< -o $@
@@ -265,7 +281,7 @@ endef
 # Setting V=0 or V=1 on the command line works as with silent rules in
 # Automake.
 #
-v = $(if $(filter 0,$(or $(V),$(if $(filter-out $(flavor DEFAULT_VERBOSITY),undefined),$(DEFAULT_VERBOSITY),$(AM_DEFAULT_VERBOSITY)))),@printf "  %-8s %s\n" $(1) $(@);)
+v = $(call if-silent,@printf "  %-8s %s\n" $(1) $(@);)
 
 #--------------------------------------------------------------------------
 #
@@ -464,6 +480,87 @@ $(strip $(1)): ; \
 	} > $$(@)-tmp; \
 	mv $$(@)-tmp $$(@) )
 endef
+
+#--------------------------------------------------------------------------
+#
+# GNU gettext support.
+
+# msgfmt-rule example:
+#
+#   $(call msgfmt-rule, \
+#       %/LC_MESSAGES/mydomain.mo: $(srcdir)/%.po, \
+#	    --check)
+#
+# This expands to the equivalent of:
+#
+#   en_US/LC_MESSAGES/mydomain.mo: $(srcdir)/en_US.po
+#       mkdir -p en_US/LC_MESSAGES/
+#       msgfmt --check -o en_US/LC_MESSAGES/mydomain.mo $(srcdir)/en_US.po
+#
+msgfmt-rule = $(strip $(1)); \
+	$$(call v, MSGFMT)$$(MKDIR_P) $$(@D) && $$(or $$(MSGFMT),msgfmt) $(2) -o $$(@) $$(<)
+
+# msgmerge-rule example:
+#
+#   $(call msgmerge-rule, \
+#       $(srcdir)/en_US.po $(srcdir)/fr_FR.po: $(srcdir)/mydomain.pot, \
+#       --backup=numbered)
+#
+# This expands to the equivalent of:
+#
+#   $(srcdir)/en_US.po: $(srcdir)/mydomain.pot
+#       msgmerge --backup=numbered --update --force-po $(srcdir)/en_US.po $(srcdir)/mydomain.pot
+#       touch $(srcdir)/en_US.po
+#
+msgmerge-rule = $(strip $(1)); \
+	$$(call v, MSGMERGE)$$(or $$(MSGMERGE),msgmerge) $(2) $(call if-silent,--quiet) --update --force-po $$(@) $$(<) \
+		&& touch $$(@)
+
+# xgettext-rule example:
+#
+#   $(call xgettext-rule, \
+#       $(srcdir)/mydomain.pot: srcfile1.scm srcfile2.c srcfile3.h, \
+#       --keyword=_ --keyword=N_ --add-location --from-code=UTF-8)
+#
+# Roughly, this expands to:
+#
+#   $(srcdir)/mydomain.pot: srcfile1.scm srcfile2.c srcfile3.h
+#       xgettext -o mydomain.pot-tmp --keyword=_ --keyword=N_ \
+#                --add-location --from-code=UTF-8 --force-po $^ \
+#       if test -f $(srcdir)/mydomain.pot; then \
+#           sed -e '/^"POT-Creation-Date:/{d;q}' $(srcdir)/mydomain.pot > mydomain.pot-datelesstmp; \
+#           sed -e '/^"POT-Creation-Date:/{d;q}' mydomain.pot-tmp > mydomain.pot-tmp-datelesstmp; \
+#           if cmp mydomain.pot-datelesstmp mydomain.pot-tmp-datelesstmp; then \
+#               touch $(srcdir)/mydomain.pot; \
+#           else \
+#               mv mydomain.pot-tmp $(srcdir)/mydomain.pot; \
+#           fi; \
+#	    else \
+#           mv mydomain.pot-tmp $(srcdir)/mydomain.pot; \
+#       fi
+#	    rm -f mydomain.pot-tmp mydomain.pot-datelesstmp mydomain.pot-tmp-datelesstmp
+#
+# The effect is merely to touch the POT file if it exists and would
+# not change except for POT-Creation-Date; otherwise to create or
+# re-create the file.
+#
+# Implementation note: the main reason the following macro updates the
+# POT file only if the file has changed is that, otherwise, ‘make
+# distcheck’ will fail, from the attempt to write into the $(srcdir).
+xgettext-rule = $(strip $(1)); \
+	$$(call v, XGETTEXT)$$(or $$(XGETTEXT),xgettext) -o $$(@F)-tmp $(2) --force-po $$(^) && \
+	if test -f '$$(@)'; then \
+		$$(or $$(SED),sed) -e '/^\"POT-Creation-Date:/{d;q}' $$(@) > $$(@F)-datelesstmp && \
+		$$(or $$(SED),sed) -e '/^\"POT-Creation-Date:/{d;q}' $$(@F)-tmp > $$(@F)-tmp-datelesstmp && \
+		if cmp $$(@F)-datelesstmp $$(@F)-tmp-datelesstmp 2> /dev/null > /dev/null; then \
+			touch $$(@); \
+		else \
+			mv $$(@F)-tmp $$(@); \
+		fi; \
+	else \
+		mv $$(@F)-tmp $$(@); \
+	fi; \
+	rm -f $$(@F)-tmp $$(@F)-tmp-datelesstmp $$(@F)-datelesstmp
 
 #--------------------------------------------------------------------------],[\$`])
 _____StM_EOF_EOF_EOF_EOF_EOF_EOF_____
