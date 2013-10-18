@@ -1,6 +1,6 @@
 # -*- mode: makefile-gmake; coding: utf-8 -*-
 #
-# serial 4
+# serial 5
 #
 m4_define([_StM_LIBRARY_MK_COPYRIGHT],
 [# -*- mode: makefile-gmake; coding: utf-8 -*-
@@ -71,6 +71,104 @@ apply-in-bunches = $(if $(strip $(call take, $(2), $(3))), \
 # $(call apply-in-bunches, remove, 25, $(files)) will remove files in
 # bunches of 25.
 remove = rm -f $(1);
+
+#--------------------------------------------------------------------------
+#
+# Macro ‘prefixed-install’ lets you do something like Automake’s
+# ‘nobase_’, but for files stored in some subdirectory (the ‘prefix’)
+# whose path you _do not_ wish to replicate at the point of
+# installation.
+#
+# Example of use:
+#
+#    EXTRA_DIST =
+#
+#    $(call prefixed-install, my-prefix/path, include, HEADER)
+#    install-data-local: install-prefixed_my_prefix_path_include_HEADERZ
+#    uninstall-local: uninstall-prefixed_my_prefix_path_include_HEADERZ
+#
+#    prefixed_my_prefix_path_include_HEADERZ = a/b/c.h d.h
+#    prefixed_my_prefix_path_dist_include_HEADERZ = e/f.h
+#    prefixed_my_prefix_path_nodist_include_HEADERZ = aa/b/c.h dd.h e/ff.h
+#
+# Once can use, for instance, ‘install-data-hook’ instead of
+# ‘install-data-local’, to tailor the behavior.
+#
+# Notice the (mis)spelling with ‘Z’ instead of ‘S’. If we had used an
+# ‘S’, Automake would have intercepted the variable, which is not what
+# we want. Similarly, one would write prefixed_foo_bar_DATAZ,
+# prefixed_foo_bar_PROGRAMZ, or prefixed_foo_bar_SCRIPTZ.
+#
+# BUGS: Currently we cannot handle libraries.
+#
+# Limitations: The following code requires special handling for file
+# names containing spaces, commas, and so forth, but this is true in
+# general in GNUmakefiles.
+
+prefixed-install = \
+	$(eval $$(call stm__prefixed_install,$(1),$(2),$(3))) \
+	$(eval $$(call stm__prefixed_uninstall,$(1),$(2),$(3))) \
+	$(eval $$(call stm__prefixed_distribute,$(1),$(2),$(3))) \
+	$(eval .PHONY: $$(call stm__all_prefixed_vars,$(1),$(2),$(3)))
+
+# FIXME: This stm__prefixed_install is inadequate for libraries, which
+# must be installed with libtool.
+#
+# FIXME: Replace the expr here with printf.
+#
+define stm__prefixed_install =
+install-$(call stm__prefixed_var,$(1),$(2),$(3)): \
+		$(addprefix $(strip $(1))/,$(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))); \
+	$(if $(strip $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))), \
+		@if :; then \
+			$(foreach d, $(sort $(dir $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3)))), \
+				echo " $(MKDIR_P) '$(DESTDIR)$($(strip $(2))dir)/$(d)'"; \
+				$(MKDIR_P) '$(DESTDIR)$($(strip $(2))dir)/$(d)';) \
+		fi; \
+		if :; then \
+			$(foreach f, $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3)), \
+				printf '%s\n' " $(INSTALL_$(strip $(3))) '$(call find,$(strip $(1))/$(f))' \
+					'$(DESTDIR)$($(strip $(2))dir)/$(dir $(f))'"; \
+				$(INSTALL_$(strip $(3))) '$(call find,$(strip $(1))/$(f))' \
+					'$(DESTDIR)$($(strip $(2))dir)/$(dir $(f))' || exit $$$$?;) \
+		fi)
+endef
+
+# FIXME: This stm__prefixed_uninstall is inadequate for libraries,
+# which must be installed with libtool.
+define stm__prefixed_uninstall =
+uninstall-$(call stm__prefixed_var,$(1),$(2),$(3)): ; \
+	$(if $(strip $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))), \
+		-@if :; then \
+			$(patsubst %,printf '%s\n' " rm -f '$(DESTDIR)$($(strip $(2))dir)/%'";, \
+				$(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))) \
+			$(patsubst %,rm -f '$(DESTDIR)$($(strip $(2))dir)/%';, \
+				$(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))) \
+		fi)
+endef
+
+stm__prefixed_distribute = \
+	$(eval EXTRA_DIST += $(addprefix $(strip $(1))/,\
+		$(call stm__expand_dist_prefixed_vars,$(1),$(2),$(3))))
+
+stm__prefix_to_var = \
+	$(shell printf '%s' '$(strip $(1))' | \
+		$(or $(SED),sed) -e 's%[[^_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]]%_%g')
+
+stm__prefixed_var = prefixed_$(call stm__prefix_to_var,$(1))_$(strip $(2))_$(strip $(3))Z
+stm__prefixed_dist_var = prefixed_$(call stm__prefix_to_var,$(1))_dist_$(strip $(2))_$(strip $(3))Z
+stm__prefixed_nodist_var = prefixed_$(call stm__prefix_to_var,$(1))_nodist_$(strip $(2))_$(strip $(3))Z
+stm__all_prefixed_vars = \
+	$(call stm__prefixed_var,$(1),$(2),$(3)) \
+	$(call stm__prefixed_dist_var,$(1),$(2),$(3)) \
+	$(call stm__prefixed_nodist_var,$(1),$(2),$(3))
+stm__expand_all_prefixed_vars = \
+	$($(call stm__prefixed_var,$(1),$(2),$(3))) \
+	$($(call stm__prefixed_dist_var,$(1),$(2),$(3))) \
+	$($(call stm__prefixed_nodist_var,$(1),$(2),$(3)))
+stm__expand_dist_prefixed_vars = \
+	$($(call stm__prefixed_var,$(1),$(2),$(3))) \
+	$($(call stm__prefixed_dist_var,$(1),$(2),$(3)))
 
 #--------------------------------------------------------------------------
 
@@ -155,13 +253,13 @@ standard-pkginfo-variables = PACKAGE PACKAGE_BUGREPORT PACKAGE_NAME	\
 # to standard output, except embedded double-quotes are
 # escaped. (For now, embedded newlines are not handled.)
 #
-# You can leave out the third (`_SUFFIX') argument.
+# You can leave out the third (‘_SUFFIX’) argument.
 #
 # If you call
 #
 #    $(call configmake-c-defines-utf8, PREFIX_, bindir libdir PACKAGE, _IN_UTF8)
 #
-# the result is code to `#define' PREFIX_BINDIR_IN_UTF8,
+# the result is code to ‘#define’ PREFIX_BINDIR_IN_UTF8,
 # PREFIX_LIBDIR_IN_UTF8, and PREFIX_PACKAGE_IN_UTF8, respectively, as
 # initializers for uint8_t arrays; the data will represent a
 # null-terminated UTF-8 string. For instance, if $(PACKAGE) is the
@@ -203,10 +301,10 @@ __configmake_utf8_cdef = printf "\#define %s { %s 0 }\n" "$(strip $(1))$(shell e
 #
 # to standard output, except that the quoted strings actually are
 # translated to UTF-8 encoding, and embedded double-quotes are
-# escaped. (Guile 2.0 respects Emacs-style `-*-coding:utf-8;-*-' and
+# escaped. (Guile 2.0 respects Emacs-style ‘-*-coding:utf-8;-*-' and
 # similar notations near the tops of source files.)
 #
-# You can leave out the third (`_SUFFIX') argument.
+# You can leave out the third (‘_SUFFIX') argument.
 #
 # Requires iconv.
 #
@@ -238,7 +336,7 @@ __configmake_unquoted_schemedef = printf "(define %s %s)\n" "$(strip $(1))$(shel
 # m4_define. You could also use m4_pushdef and m4_popdef, instead of
 # m4_define.
 #
-# You can leave out the third (`_SUFFIX') argument.
+# You can leave out the third (‘_SUFFIX') argument.
 #
 # (Occurences of '' and "" are to stop Autoconf from confusing the
 # echoed text with stray M4sugar macros, without the use of
