@@ -1,6 +1,6 @@
 # -*- mode: makefile-gmake; coding: utf-8 -*-
 #
-# serial 6
+# serial 7
 #
 m4_define([_StM_LIBRARY_MK_COPYRIGHT],
 [# -*- mode: makefile-gmake; coding: utf-8 -*-
@@ -282,6 +282,22 @@ if-not-silent = $(call if-silent,$(2),$(1))
 # Automake.
 #
 v = $(call if-silent,@printf "  %-8s %s\n" $(1) $(@);)
+
+#--------------------------------------------------------------------------
+
+# The ln-man-to-man macro creates a rule to link one manpage to one or
+# more equivalent manpages, by the .so method.
+#
+# Usage of the macro:
+#
+#    $(eval $(call ln_man_to_man, common/path/prefix, \
+#        manN/manpage_a.N, manN/manpage_b.N manN/manpage_c.N ..., \
+#        [extra_dependency1 extra_dependency2 ...]))
+#
+# The $(eval ...) is not necessarily needed, depending on where you
+# use the macro; I believe, however, that it will not hurt.
+#
+ln-man-to-man = $(addprefix $(strip $(1))/,$(3)): $(addprefix $(strip $(1))/,$(2)) $(4); echo '.so $(strip $(2))' > $$(@)
 
 #--------------------------------------------------------------------------
 #
