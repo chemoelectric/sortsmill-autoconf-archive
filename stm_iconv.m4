@@ -15,7 +15,7 @@
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
 
-# serial 3
+# serial 4
 
 ##################################
 # Macros for working with iconv  #
@@ -36,7 +36,9 @@
 # HAVE_ICONV_OPEN_<ENCODING1>_AND_<ENCODING2>_with_<TARGET_SUFFIX> to
 # `1' or `0'.
 #
-AC_DEFUN([StM_ICONV_OPEN_CHECK_CONVERSION],[{ :
+AC_DEFUN([StM_ICONV_OPEN_CHECK_CONVERSION],[
+if :
+then
    AC_LANG_PUSH([C])
    m4_pushdef([cachevar],
       m4_ifnblank([$3],
@@ -79,7 +81,7 @@ AC_DEFUN([StM_ICONV_OPEN_CHECK_CONVERSION],[{ :
 
    m4_popdef([cachevar])
    AC_LANG_POP
-}])
+fi])
 
 # StM_ICONV_OPEN_ENCODING_NAME(encoding, name1 name2 ..., [action_if_found], [action_if_not_found])
 # -------------------------------------------------------------------------------------------------
@@ -92,7 +94,9 @@ AC_DEFUN([StM_ICONV_OPEN_CHECK_CONVERSION],[{ :
 # libiconv. Thus be careful to include at least one name that GNU
 # libiconv will recognize, or else override the default action.
 #
-AC_DEFUN([StM_ICONV_OPEN_ENCODING_NAME],[{ :
+AC_DEFUN([StM_ICONV_OPEN_ENCODING_NAME],[
+if :
+then
    m4_pushdef([cachevar], AS_TR_SH([stm_cv_func_iconv_open_name_for_$1]))
    AC_LANG_PUSH([C])
 
@@ -147,7 +151,7 @@ AC_DEFUN([StM_ICONV_OPEN_ENCODING_NAME],[{ :
 
    AC_LANG_POP
    m4_popdef([cachevar])
-}])
+fi])
 
 # StM_CHECK_ICONV_IS_GNU
 # ----------------------
@@ -156,7 +160,9 @@ AC_DEFUN([StM_ICONV_OPEN_ENCODING_NAME],[{ :
 # testing, then set the cache variable stm_cv_iconv_is_gnu to `yes';
 # otherwise set the variable to `no'.
 #
-AC_DEFUN([StM_CHECK_ICONV_IS_GNU], [if true; then
+AC_DEFUN([StM_CHECK_ICONV_IS_GNU], [
+if :
+then
    AC_REQUIRE([AC_PROG_AWK])
    AC_CHECK_HEADER([iconv.h])
    AC_CACHE_CHECK([whether iconv is GNU], [stm_cv_iconv_is_gnu], [
