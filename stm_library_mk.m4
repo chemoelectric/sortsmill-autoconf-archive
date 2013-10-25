@@ -1,6 +1,6 @@
 # -*- mode: makefile-gmake; coding: utf-8 -*-
 #
-# serial 7
+# serial 8
 #
 m4_define([_StM_LIBRARY_MK_COPYRIGHT],
 [# -*- mode: makefile-gmake; coding: utf-8 -*-
@@ -193,7 +193,7 @@ define stm__prefixed_uninstall =
 uninstall-$(call stm__prefixed_var,$(1),$(2),$(3)): ; \
 	$(if $(strip $(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))), \
 		-@if :; then \
-			$(patsubst %,printf '%s\n' " rm -f '$(DESTDIR)$($(strip $(2))dir)/%'";, \
+			$(patsubst %,expr " rm -f '$(DESTDIR)$($(strip $(2))dir)/%'" : '\(.*\)';, \
 				$(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))) \
 			$(patsubst %,rm -f '$(DESTDIR)$($(strip $(2))dir)/%';, \
 				$(call stm__expand_all_prefixed_vars,$(1),$(2),$(3))) \
