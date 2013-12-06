@@ -1,6 +1,6 @@
 # -*- mode: makefile-gmake; coding: utf-8 -*-
 #
-# serial 9
+# serial 10
 #
 m4_define([_StM_LIBRARY_MK_COPYRIGHT],
 [# -*- mode: makefile-gmake; coding: utf-8 -*-
@@ -445,6 +445,9 @@ $(eval $(call __configmake_rule_template,pkginfo,Package information for $(PACKA
 $(eval $(call __configmake_rule_template,dirlayout,Directory layout of $(PACKAGE_NAME).))
 $(eval $(call __configmake_rule_template,confopts,$$(warning WARNING: confopts is DEPRECATED. Use buildinfo instead.)Configuration options that were chosen for $(PACKAGE_NAME).))
 $(eval $(call __configmake_rule_template,buildinfo,Miscellaneous build information for $(PACKAGE_NAME).))
+
+# FIXME: Document this.
+configmake-buildinfopy-rules = $(eval $(call __configmake_rule_template,buildinfopy$(subst .,_,$(strip $(1))),Miscellaneous Python $(subst _,.,$(strip $(1)))-related build information for $(PACKAGE_NAME).))
 
 # FIXME: Document this.
 define configmake-h-rule =
