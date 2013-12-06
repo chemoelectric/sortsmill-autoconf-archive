@@ -1,6 +1,6 @@
 # -*- mode: makefile-gmake; coding: utf-8 -*-
 #
-# serial 8
+# serial 9
 #
 m4_define([_StM_LIBRARY_MK_COPYRIGHT],
 [# -*- mode: makefile-gmake; coding: utf-8 -*-
@@ -443,7 +443,8 @@ endef
 __configmake_toupper = $(shell echo '$(strip $(1))' | LC_ALL=C tr '@<:@a-z@:>@' '@<:@A-Z@:>@')
 $(eval $(call __configmake_rule_template,pkginfo,Package information for $(PACKAGE_NAME).))
 $(eval $(call __configmake_rule_template,dirlayout,Directory layout of $(PACKAGE_NAME).))
-$(eval $(call __configmake_rule_template,confopts,Configuration options that were chosen for $(PACKAGE_NAME).))
+$(eval $(call __configmake_rule_template,confopts,$$(warning WARNING: confopts is DEPRECATED. Use buildinfo instead.)Configuration options that were chosen for $(PACKAGE_NAME).))
+$(eval $(call __configmake_rule_template,buildinfo,Miscellaneous build information for $(PACKAGE_NAME).))
 
 # FIXME: Document this.
 define configmake-h-rule =
