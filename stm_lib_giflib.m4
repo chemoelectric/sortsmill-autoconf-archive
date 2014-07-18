@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 3
+# serial 4
 
 # FIXME: Document these.
 
@@ -61,4 +61,28 @@ int error;
    AC_DEFINE_UNQUOTED([HAVE_DGIFOPENFILENAME_ERROR_RETURN],
       [`(test "${stm_cv_func_dgifopenfilename_error_return}" = yes && echo 1) || echo 0`],
       [Define to 1 if DGifOpenFileName takes an error return parameter; otherwise define to 0.])
+}])
+
+AC_DEFUN([StM_FUNC_DGIFOPENFILENAME_ERROR_RETURN],[{ :
+   AC_CACHE_CHECK([whether DGifCloseFile takes an error return parameter (giflib >= 5)],
+      [stm_cv_func_dgifclosefile_error_return],[
+      AC_COMPILE_IFELSE([
+         AC_LANG_PROGRAM([
+@%:@include <stdio.h>
+@%:@include <gif_lib.h>
+         ],[
+int error;
+(void) DGifCloseFile ("filename", &error);
+         ])
+      ],[
+         stm_cv_func_dgifclosefile_error_return=yes
+      ],[
+         stm_cv_func_dgifclosefile_error_return=no
+      ])
+   ])
+   AC_SUBST([HAVE_DGIFCLOSEFILE_ERROR_RETURN],
+            ["${stm_cv_func_dgifclosefile_error_return}"])
+   AC_DEFINE_UNQUOTED([HAVE_DGIFCLOSEFILE_ERROR_RETURN],
+      [`(test "${stm_cv_func_dgifclosefile_error_return}" = yes && echo 1) || echo 0`],
+      [Define to 1 if DGifCloseFile takes an error return parameter; otherwise define to 0.])
 }])
