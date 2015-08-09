@@ -49,6 +49,7 @@ dist_aclocal_DATA += stm_prog_help2man.m4
 dist_aclocal_DATA += stm_prog_iconv.m4
 dist_aclocal_DATA += stm_prog_m4.m4
 dist_aclocal_DATA += stm_prog_perl.m4
+dist_aclocal_DATA += stm_prog_postiats.m4
 dist_aclocal_DATA += stm_prog_sortsmill.m4
 dist_aclocal_DATA += stm_prog_sortsmill_apii_to_guile.m4
 dist_aclocal_DATA += stm_prog_sortsmill_changelogger.m4
