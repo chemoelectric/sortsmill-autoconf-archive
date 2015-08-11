@@ -21,9 +21,16 @@
 # PATSCC_MINOR, and PATSCC_SUBMINOR. The PATSCC_VERSION variable is
 # precious and may be overridden.
 #
+# FIXME: Document the optional `min-version' argument.
+#
 AC_DEFUN([StM_PROG_PATSCC],[{ :
    AC_REQUIRE([AC_PROG_EGREP])
    AC_REQUIRE([AC_PROG_AWK])
+
+   AC_ARG_VAR([PATSCC_VERSION],[ATS/Postiats version])
+   AC_SUBST([PATSCC_MAJOR])
+   AC_SUBST([PATSCC_MINOR])
+   AC_SUBST([PATSCC_SUBMINOR])
 
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([PATSCC],
       [ATS/Postiats atscc command],
@@ -54,20 +61,12 @@ AC_DEFUN([StM_PROG_PATSCC],[{ :
       AC_MSG_CHECKING([ATS/Postiats subminor version])
       PATSCC_SUBMINOR=`echo ${PATSCC_VERSION} | ${AWK} -v FS=. '{print @S|@3}'`
       AC_MSG_RESULT([${PATSCC_SUBMINOR}])
-
-      AC_ARG_VAR([PATSCC_VERSION],[ATS/Postiats version])
-      AC_SUBST([PATSCC_MAJOR])
-      AC_SUBST([PATSCC_MINOR])
-      AC_SUBST([PATSCC_SUBMINOR])
    fi
 
-   ####### FIXME: Make version test a separate macro.
    if test -n "$1"
    then
-      if test -z "${ac_cv_path_PATSCC}"
+      if test -n "${ac_cv_path_PATSCC}"
       then
-         AC_MSG_ERROR([ATS/Postiats compiler not found])
-      else
          __i=1
          while true
          do
@@ -79,7 +78,11 @@ AC_DEFUN([StM_PROG_PATSCC],[{ :
             test "${__u}" -lt "${__v}" && break
             if test "${__v}" -lt "${__u}"
             then
-               AC_MSG_ERROR([The ATS/Postiats compiler version is too low; it should be at least $1])
+               AC_MSG_WARN([Need ${ac_cv_path_PATSCC} version at least $1; got ${PATSCC_VERSION}.])
+               AC_MSG_WARN([Assuming the ATS/Postiats compiler cannot be used.])
+               unset PATSCC ac_cv_path_PATSCC
+               unset PATSCC_VERSION PATSCC_MAJOR PATSCC_MINOR PATSCC_SUBMINOR
+               break
             fi
             __i=`expr ${__i} + 1`
          done
