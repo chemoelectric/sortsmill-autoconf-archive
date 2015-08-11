@@ -27,11 +27,6 @@ AC_DEFUN([StM_PROG_PATSCC],[{ :
    AC_REQUIRE([AC_PROG_EGREP])
    AC_REQUIRE([AC_PROG_AWK])
 
-   AC_ARG_VAR([PATSCC_VERSION],[ATS/Postiats version])
-   AC_SUBST([PATSCC_MAJOR])
-   AC_SUBST([PATSCC_MINOR])
-   AC_SUBST([PATSCC_SUBMINOR])
-
    StM_PATH_PROGS_CACHED_AND_PRECIOUS([PATSCC],
       [ATS/Postiats atscc command],
       [patscc atscc],[
@@ -42,6 +37,11 @@ AC_DEFUN([StM_PROG_PATSCC],[{ :
             ac_path_PATSCC_found=:
          fi
       ])
+
+   AC_ARG_VAR([PATSCC_VERSION],[ATS/Postiats version])
+   AC_SUBST([PATSCC_MAJOR])
+   AC_SUBST([PATSCC_MINOR])
+   AC_SUBST([PATSCC_SUBMINOR])
 
    if test -n "${ac_cv_path_PATSCC}"
    then
