@@ -18,8 +18,8 @@
 # setting PATSCC or the cache variable.
 #
 # If PATSCC is set, then also set PATSCC_VERSION, PATSCC_MAJOR,
-# PATSCC_MINOR, and PATSCC_SUBMINOR. The PATSCC_VERSION variable is
-# precious and may be overridden.
+# PATSCC_MINOR, and PATSCC_SUBMINOR. The PATSCC_VERSION variable may
+# be overridden.
 #
 # FIXME: Document the optional `min-version' argument.
 #
@@ -35,19 +35,22 @@ AC_DEFUN([StM_PROG_PATSCC],[{ :
          then
             ac_cv_path_PATSCC=${ac_path_PATSCC}
             ac_path_PATSCC_found=:
+         else
+            unset ac_cv_path_PATSCC
          fi
       ])
 
-   AC_ARG_VAR([PATSCC_VERSION],[ATS/Postiats version])
+   AC_SUBST([PATSCC_VERSION])
    AC_SUBST([PATSCC_MAJOR])
    AC_SUBST([PATSCC_MINOR])
    AC_SUBST([PATSCC_SUBMINOR])
 
-   if test -n "${ac_cv_path_PATSCC}"
+   if test -n "${PATSCC}"
    then
       AC_MSG_CHECKING([ATS/Postiats version])
+      # Quietly allow PATSCC_VERSION to be overridden, just in case.
       test -z "${PATSCC_VERSION}" &&
-           PATSCC_VERSION=`LC_ALL=C LANG=C ${ac_path_PATSCC} -vats 2> /dev/null | LC_ALL=C LANG=C sed 's|^.*ATS/Postiats version \(@<:@0123456789@:>@@<:@0123456789.@:>@*\).*$|\1|'`
+            PATSCC_VERSION=`LC_ALL=C LANG=C ${PATSCC} -vats 2> /dev/null | LC_ALL=C LANG=C sed 's|^.*ATS/Postiats version \(@<:@0123456789@:>@@<:@0123456789.@:>@*\).*$|\1|'`
       AC_MSG_RESULT([${PATSCC_VERSION}])
 
       AC_MSG_CHECKING([ATS/Postiats major version])
@@ -65,7 +68,7 @@ AC_DEFUN([StM_PROG_PATSCC],[{ :
 
    if test -n "$1"
    then
-      if test -n "${ac_cv_path_PATSCC}"
+      if test -n "${PATSCC}"
       then
          __i=1
          while true
@@ -78,9 +81,9 @@ AC_DEFUN([StM_PROG_PATSCC],[{ :
             test "${__u}" -lt "${__v}" && break
             if test "${__v}" -lt "${__u}"
             then
-               AC_MSG_WARN([Need ${ac_cv_path_PATSCC} version at least $1; got ${PATSCC_VERSION}.])
+               AC_MSG_WARN([Need ${PATSCC} version at least $1; got ${PATSCC_VERSION}.])
                AC_MSG_WARN([Assuming the ATS/Postiats compiler cannot be used.])
-               unset PATSCC ac_cv_path_PATSCC
+               unset PATSCC
                unset PATSCC_VERSION PATSCC_MAJOR PATSCC_MINOR PATSCC_SUBMINOR
                break
             fi
