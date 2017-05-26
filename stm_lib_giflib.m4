@@ -1,13 +1,13 @@
 # -*- autoconf -*-
 #
-# Copyright (C) 2013 Khaled Hosny and Barry Schwartz
+# Copyright (C) 2013, 2017 Khaled Hosny and Barry Schwartz
 # 
 # Copying and distribution of this file, with or without modification,
 # are permitted in any medium without royalty provided the copyright
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 4
+# serial 5
 
 # FIXME: Document these.
 
@@ -15,7 +15,8 @@ AC_DEFUN([StM_LIB_GIFLIB],[{ :
    AC_LIB_HAVE_LINKFLAGS([gif], [],
       [@%:@include <gif_lib.h>],
       [GifFileType f;
-       int x = DGifCloseFile (&f);])
+       int error_code;
+       int x = DGifCloseFile (&f, &error_code);])
 }])
 
 AC_DEFUN([StM_LIB_GIFLIB_EXTENSION_BLOCK_FUNCTION],[{ :
