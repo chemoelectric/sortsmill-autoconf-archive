@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 5
+# serial 6
 
 # FIXME: Document these.
 
@@ -17,6 +17,16 @@ AC_DEFUN([StM_LIB_GIFLIB],[{ :
       [GifFileType f;
        int error_code;
        int x = DGifCloseFile (&f, &error_code);])
+   if test "${HAVE_LIBGIF}" != yes; then
+      # Check for an older version of GIFLIB. Use
+      # StM_FUNC_DGIFOPENFILENAME_ERROR_RETURN and
+      # StM_FUNC_DGIFCLOSEFILENAME_ERROR_RETURN to
+      # test version.
+      AC_LIB_HAVE_LINKFLAGS([gif], [],
+         [@%:@include <gif_lib.h>],
+         [GifFileType f;
+          int x = DGifCloseFile (&f);])
+   fi
 }])
 
 AC_DEFUN([StM_LIB_GIFLIB_EXTENSION_BLOCK_FUNCTION],[{ :
@@ -64,7 +74,7 @@ int error;
       [Define to 1 if DGifOpenFileName takes an error return parameter; otherwise define to 0.])
 }])
 
-AC_DEFUN([StM_FUNC_DGIFOPENFILENAME_ERROR_RETURN],[{ :
+AC_DEFUN([StM_FUNC_DGIFCLOSEFILENAME_ERROR_RETURN],[{ :
    AC_CACHE_CHECK([whether DGifCloseFile takes an error return parameter (giflib >= 5)],
       [stm_cv_func_dgifclosefile_error_return],[
       AC_COMPILE_IFELSE([
@@ -72,8 +82,9 @@ AC_DEFUN([StM_FUNC_DGIFOPENFILENAME_ERROR_RETURN],[{ :
 @%:@include <stdio.h>
 @%:@include <gif_lib.h>
          ],[
+GifFileType f;
 int error;
-(void) DGifCloseFile ("filename", &error);
+(void) DGifCloseFile (&f, &error);
          ])
       ],[
          stm_cv_func_dgifclosefile_error_return=yes
