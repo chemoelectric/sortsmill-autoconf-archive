@@ -41,6 +41,7 @@ dist_aclocal_DATA += stm_make_readme.m4
 
 dist_aclocal_DATA += stm_path_progs_cached_and_precious.m4
 
+dist_aclocal_DATA += stm_prog_cython.m4
 dist_aclocal_DATA += stm_prog_gawk.m4
 dist_aclocal_DATA += stm_prog_gettext_tools.m4
 dist_aclocal_DATA += stm_prog_gnu_indent.m4
