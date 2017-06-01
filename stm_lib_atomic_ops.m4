@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 6
+# serial 7
 
 # StM_LIB_ATOMIC_OPS
 # ------------------
@@ -56,9 +56,9 @@ AC_DEFUN([StM_LIB_ATOMIC_OPS],[{ :
       if test -z "${ATOMIC_OPS_LIBS}"; then
          StM_LIB_ATOMIC_OPS__save_libs="${LIBS}"
          LIBS=
-         AC_SEARCH_LIBS([AO_locks],[atomic_ops])
+         AC_SEARCH_LIBS([AO_pause],[atomic_ops])
          ATOMIC_OPS_LIBS="${LIBS}"
-         test x"${ac_cv_search_AO_locks}" = xno && HAVE_ATOMIC_OPS_LIB=0
+         test x"${ac_cv_search_AO_pause}" = xno && HAVE_ATOMIC_OPS_LIB=0
          LIBS="${StM_LIB_ATOMIC_OPS__save_libs}"
          unset StM_LIB_ATOMIC_OPS__save_libs
       fi
