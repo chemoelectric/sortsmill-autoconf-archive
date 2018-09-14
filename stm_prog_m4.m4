@@ -1,13 +1,13 @@
 # -*- autoconf -*-
 #
-# Copyright (C) 2013 Khaled Hosny and Barry Schwartz
+# Copyright (C) 2013, 2018 Khaled Hosny and Barry Schwartz
 # 
 # Copying and distribution of this file, with or without modification,
 # are permitted in any medium without royalty provided the copyright
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 # StM_PROG_M4
 # -----------
@@ -33,8 +33,8 @@ AC_DEFUN([StM_PROG_M4],[{ :
 # StM_PROG_GNU_M4
 # ---------------
 #
-# Set M4 to the path of the first GNU m4 in the PATH, or to an empty
-# string if GNU m4 is not found. The result is cached in
+# Set GNU_M4 to the path of the first GNU m4 in the PATH, or to an
+# empty string if GNU m4 is not found. The result is cached in
 # ac_cv_path_GNU_M4. The test may be overridden by setting GNU_M4 or
 # the cache variable.
 #
