@@ -41,6 +41,7 @@ dist_aclocal_DATA += stm_make_readme.m4
 
 dist_aclocal_DATA += stm_path_progs_cached_and_precious.m4
 
+dist_aclocal_DATA += stm_prog_cvc4.m4
 dist_aclocal_DATA += stm_prog_cython.m4
 dist_aclocal_DATA += stm_prog_gawk.m4
 dist_aclocal_DATA += stm_prog_gettext_tools.m4
@@ -57,6 +58,7 @@ dist_aclocal_DATA += stm_prog_sortsmill_changelogger.m4
 dist_aclocal_DATA += stm_prog_sortsmill_core_guile.m4
 dist_aclocal_DATA += stm_prog_sortsmill_guile_mkdep.m4
 dist_aclocal_DATA += stm_prog_wget.m4
+dist_aclocal_DATA += stm_prog_z3.m4
 
 dist_aclocal_DATA += stm_lib_atomic_ops.m4
 dist_aclocal_DATA += stm_lib_giflib.m4
