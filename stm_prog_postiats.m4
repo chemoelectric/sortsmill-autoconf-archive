@@ -1,13 +1,13 @@
 # -*- autoconf -*-
 #
-# Copyright (C) 2015 Khaled Hosny and Barry Schwartz
+# Copyright (C) 2015, 2018 Khaled Hosny and Barry Schwartz
 # 
 # Copying and distribution of this file, with or without modification,
 # are permitted in any medium without royalty provided the copyright
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 2
+# serial 3
 
 # StM_PROG_PATSCC([min-version])
 # ------------------------------
@@ -205,4 +205,118 @@ AC_DEFUN([StM_PROG_POSTIATS],[{ :
     unset PATSCC_VERSION PATSCC_MAJOR PATSCC_MINOR PATSCC_SUBMINOR
     unset PATSOPT_VERSION PATSOPT_MAJOR PATSOPT_MINOR PATSOPT_SUBMINOR
   fi
+}])
+
+# StM_PROG_PATSOLVE_SMT2()
+# ------------------------
+#
+# Set PATSOLVE_SMT2 to the path of the first version of patsolve_smt2
+# in the PATH, or to an empty string if no such command is found. The
+# result is cached in ac_cv_path_PATSOLVE_SMT2. The test may be
+# overridden by setting PATSOLVE_SMT2 or the cache variable.
+#
+AC_DEFUN([StM_PROG_PATSOLVE_SMT2],[StM_PROG_POSTIATS_ACCESSORY__([PATSOLVE_SMT2],[patsolve_smt2])])
+
+# StM_PROG_PATSOLVE_Z3()
+# ----------------------
+#
+# Set PATSOLVE_Z3 to the path of the first version of patsolve_z3
+# in the PATH, or to an empty string if no such command is found. The
+# result is cached in ac_cv_path_PATSOLVE_Z3. The test may be
+# overridden by setting PATSOLVE_Z3 or the cache variable.
+#
+AC_DEFUN([StM_PROG_PATSOLVE_Z3],[StM_PROG_POSTIATS_ACCESSORY__([PATSOLVE_Z3],[patsolve_z3])])
+
+
+# StM_PROG_ATSCC2CLJ()
+# --------------------
+#
+# Set ATSCC2CLJ to the path of the first version of atscc2clj
+# in the PATH, or to an empty string if no such command is found. The
+# result is cached in ac_cv_path_ATSCC2CLJ. The test may be
+# overridden by setting ATSCC2CLJ or the cache variable.
+#
+AC_DEFUN([StM_PROG_ATSCC2CLJ],[StM_PROG_POSTIATS_ACCESSORY__([ATSCC2CLJ],[atscc2clj])])
+
+
+# StM_PROG_ATSCC2JS()
+# --------------------
+#
+# Set ATSCC2JS to the path of the first version of atscc2js
+# in the PATH, or to an empty string if no such command is found. The
+# result is cached in ac_cv_path_ATSCC2JS. The test may be
+# overridden by setting ATSCC2JS or the cache variable.
+#
+AC_DEFUN([StM_PROG_ATSCC2JS],[StM_PROG_POSTIATS_ACCESSORY__([ATSCC2JS],[atscc2js])])
+
+# StM_PROG_ATSCC2PHP()
+# --------------------
+#
+# Set ATSCC2PHP to the path of the first version of atscc2php
+# in the PATH, or to an empty string if no such command is found. The
+# result is cached in ac_cv_path_ATSCC2PHP. The test may be
+# overridden by setting ATSCC2PHP or the cache variable.
+#
+AC_DEFUN([StM_PROG_ATSCC2PHP],[StM_PROG_POSTIATS_ACCESSORY__([ATSCC2PHP],[atscc2php])])
+
+# StM_PROG_ATSCC2PL()
+# --------------------
+#
+# Set ATSCC2PL to the path of the first version of atscc2pl
+# in the PATH, or to an empty string if no such command is found. The
+# result is cached in ac_cv_path_ATSCC2PL. The test may be
+# overridden by setting ATSCC2PL or the cache variable.
+#
+AC_DEFUN([StM_PROG_ATSCC2PL],[StM_PROG_POSTIATS_ACCESSORY__([ATSCC2PL],[atscc2pl])])
+
+# StM_PROG_ATSCC2PY3()
+# --------------------
+#
+# Set ATSCC2PY3 to the path of the first version of atscc2py3
+# in the PATH, or to an empty string if no such command is found. The
+# result is cached in ac_cv_path_ATSCC2PY3. The test may be
+# overridden by setting ATSCC2PY3 or the cache variable.
+#
+AC_DEFUN([StM_PROG_ATSCC2PY3],[StM_PROG_POSTIATS_ACCESSORY__([ATSCC2PY3],[atscc2py3])])
+
+# StM_PROG_ATSCC2R34()
+# --------------------
+#
+# Set ATSCC2R34 to the path of the first version of atscc2r34
+# in the PATH, or to an empty string if no such command is found. The
+# result is cached in ac_cv_path_ATSCC2R34. The test may be
+# overridden by setting ATSCC2R34 or the cache variable.
+#
+AC_DEFUN([StM_PROG_ATSCC2R34],[StM_PROG_POSTIATS_ACCESSORY__([ATSCC2R34],[atscc2r34])])
+
+# StM_PROG_ATSCC2SCM()
+# --------------------
+#
+# Set ATSCC2SCM to the path of the first version of atscc2scm
+# in the PATH, or to an empty string if no such command is found. The
+# result is cached in ac_cv_path_ATSCC2SCM. The test may be
+# overridden by setting ATSCC2SCM or the cache variable.
+#
+AC_DEFUN([StM_PROG_ATSCC2SCM],[StM_PROG_POSTIATS_ACCESSORY__([ATSCC2SCM],[atscc2scm])])
+
+# StM_PROG_POSTIATS_ACCESSORY__(xxx, yyy)
+# ---------------------------------------
+#
+# A helper macro. (FIXME: Really document it.)
+#
+AC_DEFUN([StM_PROG_POSTIATS_ACCESSORY__],[{ :
+   AC_REQUIRE([AC_PROG_FGREP])
+
+   StM_PATH_PROGS_CACHED_AND_PRECIOUS([$1],
+      [ATS/Postiats $2 command],
+      [$2],[
+         if LC_ALL=C LANG=C ${ac_path_$1} --help 2> /dev/null | \
+                     LC_ALL=C LANG=C ${FGREP} 'Usage: $2 <command> ... <command>' 2> /dev/null > /dev/null
+         then
+            ac_cv_path_$1=${ac_path_$1}
+            ac_path_$1_found=:
+         else
+            unset ac_cv_path_$1
+         fi
+      ])
 }])
