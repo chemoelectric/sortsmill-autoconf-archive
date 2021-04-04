@@ -7,10 +7,10 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# serial 3
+# serial 4
 
 # StM_PROG_GNU_INDENT
-# -------------
+# -------------------
 #
 # Set GNU_INDENT to the path of the first GNU indent in the PATH, or
 # to an empty string if GNU indent is not found. The result is cached
